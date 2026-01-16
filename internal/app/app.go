@@ -1,0 +1,61 @@
+package app
+
+import (
+	"database/sql"
+	"log"
+	"net/http"
+
+	"vietio/config"
+	"vietio/internal/ads"
+	"vietio/internal/db/seed"
+	"vietio/migrations"
+)
+
+func RunMigrations(dbConn *sql.DB) {
+	if err := migrations.Up(dbConn); err != nil {
+		log.Fatal("migration failed: ", err)
+	}
+
+	log.Println("успешная миграция БД")
+}
+
+func RunSeed(dbConn *sql.DB, config *config.Config) {
+	if config.Env != "dev" {
+		log.Fatal("сиды работают только в dev окружении")
+	}
+
+	if err := migrations.Reset(dbConn); err != nil {
+		log.Fatal("reset failed: ", err)
+	}
+
+	log.Println("rollback всех таблиц")
+
+	if err := migrations.Up(dbConn); err != nil {
+		log.Fatal("migration failed: ", err)
+	}
+
+	log.Println("успешная миграция БД")
+
+	if err := seed.Run(dbConn); err != nil {
+		log.Fatal("seed failed: ", err)
+	}
+
+	log.Println("сиды успешно добавлены")
+}
+
+func RunHttpServer(dbConn *sql.DB, config *config.Config) {
+	adsRepository := ads.NewRepository(dbConn)
+	adsService := ads.NewService(adsRepository)
+	adsHandler := ads.NewHandler(adsService)
+
+	router := http.NewServeMux()
+	router.HandleFunc("/api/ads", adsHandler.GetAds)
+	router.HandleFunc("POST /api/ads", adsHandler.CreateAd)
+
+	server := http.Server{
+		Addr:    ":" + config.Server.HttpPort,
+		Handler: router,
+	}
+
+	server.ListenAndServe()
+}
