@@ -40,4 +40,10 @@ type AdsListResponse struct {
 type CreateAdRequestBody struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	Price       int    `json:"price"`
+	CategoryId  int    `json:"category_id"`
+}
+
+type CreateAdResponse struct {
+	Id int `json:"id"`
 }

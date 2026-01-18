@@ -7,6 +7,7 @@ import (
 
 	"vietio/config"
 	"vietio/internal/ads"
+	"vietio/internal/categories"
 	"vietio/internal/db/seed"
 	"vietio/migrations"
 )
@@ -45,7 +46,8 @@ func RunSeed(dbConn *sql.DB, config *config.Config) {
 
 func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	adsRepository := ads.NewRepository(dbConn)
-	adsService := ads.NewService(adsRepository)
+	categoryRepository := categories.NewRepository(dbConn)
+	adsService := ads.NewService(adsRepository, categoryRepository)
 	adsHandler := ads.NewHandler(adsService)
 
 	router := http.NewServeMux()

@@ -38,21 +38,17 @@ func (h *Handler) GetAds(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 	payload := CreateAdRequestBody{}
 
-
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil {
 		response.Json(w, err.Error(), http.StatusBadRequest)
 		return
     }
 
-	type Test struct {
-		Id int `json:"id"`
-	}
+	result, err := h.service.CreateAd(r.Context(), payload)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+    }
 
-	t := Test{
-		Id: 123,
-	}
-
-
-	response.Json(w, t, http.StatusOK)
+	response.Json(w, result, http.StatusOK)
 }

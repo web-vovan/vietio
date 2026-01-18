@@ -86,3 +86,40 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 
 	return result, nil
 }
+
+func (repo *Repository) CreateAd(ctx context.Context, payload CreateAdRequestBody) (int, error) {
+	var id int
+
+	query := `
+		INSERT INTO ads (
+			title,
+			description,
+			category_id,
+			price,
+			user_id,
+			city_id,
+			currency,
+			status
+		)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING id
+	`
+
+	err := repo.db.QueryRowContext(
+		ctx,
+		query,
+		payload.Title,
+		payload.Description,
+		payload.CategoryId,
+		payload.Price,
+		1,
+		1,
+		"VDN",
+		1,
+	).Scan(&id)
+
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
