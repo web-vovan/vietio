@@ -5,8 +5,9 @@ CREATE TABLE if not exists files (
   ad_id int8 NULL,
   "path" varchar(255) NOT NULL,
   "order" int2 NULL,
+  "size" int NULL,
+  "mime" varchar(255) NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW(),
   CONSTRAINT files_pkey PRIMARY KEY (id)
 );
 

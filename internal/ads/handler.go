@@ -1,7 +1,6 @@
 package ads
 
 import (
-	"encoding/json"
 	"net/http"
 	"vietio/internal/response"
 	"vietio/pkg/utils"
@@ -27,28 +26,36 @@ func (h *Handler) GetAds(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result, err := h.service.GetAds(r.Context(), params)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
-    }
+	}
 
 	response.Json(w, result, http.StatusOK)
 }
 
 func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
-	payload := CreateAdRequestBody{}
-
-	err := json.NewDecoder(r.Body).Decode(&payload)
+	// Максимальный размер тела 20 MB
+	err := r.ParseMultipartForm(20 << 20)
 	if err != nil {
 		response.Json(w, err.Error(), http.StatusBadRequest)
 		return
-    }
+	}
 
-	result, err := h.service.CreateAd(r.Context(), payload)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
+	payload := CreateAdRequestBody{
+		Title:       r.FormValue("title"),
+		Description: r.FormValue("description"),
+		Price:       utils.ParseInt(r.FormValue("price"), 0),
+		CategoryId:  utils.ParseInt(r.FormValue("category_id"), 0),
+	}
+
+	files := r.MultipartForm.File["files"]
+
+	result, err := h.service.CreateAd(r.Context(), payload, files)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
-    }
+	}
 
 	response.Json(w, result, http.StatusOK)
 }

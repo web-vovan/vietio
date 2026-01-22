@@ -9,6 +9,8 @@ import (
 	"vietio/internal/ads"
 	"vietio/internal/categories"
 	"vietio/internal/db/seed"
+	"vietio/internal/file"
+	"vietio/internal/storage"
 	"vietio/migrations"
 )
 
@@ -47,11 +49,19 @@ func RunSeed(dbConn *sql.DB, config *config.Config) {
 func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	adsRepository := ads.NewRepository(dbConn)
 	categoryRepository := categories.NewRepository(dbConn)
-	adsService := ads.NewService(adsRepository, categoryRepository)
+	fileStorage := storage.NewLocalStorage("./uploads")
+	fileRepository := file.NewFileRepository(dbConn)
+
+	adsService := ads.NewService(
+		adsRepository,
+		categoryRepository,
+		fileStorage,
+		fileRepository,
+	)
 	adsHandler := ads.NewHandler(adsService)
 
 	router := http.NewServeMux()
-	router.HandleFunc("/api/ads", adsHandler.GetAds)
+	router.HandleFunc("GET /api/ads", adsHandler.GetAds)
 	router.HandleFunc("POST /api/ads", adsHandler.CreateAd)
 
 	server := http.Server{

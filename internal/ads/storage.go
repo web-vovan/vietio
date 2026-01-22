@@ -1,0 +1,16 @@
+package ads
+
+import (
+	"context"
+	"mime/multipart"
+)
+
+type FileStorage interface {
+    Save(ctx context.Context, file multipart.File, header *multipart.FileHeader) (FileInfo, error)
+}
+
+type FileInfo struct {
+    FileName string
+    Size int64
+    Mime string
+}

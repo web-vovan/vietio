@@ -3,6 +3,7 @@ package seed
 import (
 	"database/sql"
 	"fmt"
+	"math/rand"
 
 	"github.com/brianvoe/gofakeit/v7"
 )
@@ -15,8 +16,8 @@ func runFilesSeed(dbConn *sql.DB) error {
 
     query := `
 		INSERT INTO files (
-			ad_id, path, "order"
-		) VALUES ($1, $2, $3)
+			ad_id, path, "order", size, mime
+		) VALUES ($1, $2, $3, $4, $5)
 	`
 	stmt, err := dbConn.Prepare(query)
 	if err != nil {
@@ -28,8 +29,10 @@ func runFilesSeed(dbConn *sql.DB) error {
 		for i := 0; i < 3; i++ {
 			_, err := stmt.Exec(
 				id,
-				"/uploads/" + gofakeit.UUID() + ".jpg",
+				gofakeit.UUID() + ".jpg",
 				i + 1,
+				rand.Intn(1000),
+				"image/jpg",
 			)
 
 			if err != nil {

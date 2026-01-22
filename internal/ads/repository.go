@@ -87,7 +87,7 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 	return result, nil
 }
 
-func (repo *Repository) CreateAd(ctx context.Context, payload CreateAdRequestBody) (int, error) {
+func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload CreateAdRequestBody) (int, error) {
 	var id int
 
 	query := `
@@ -105,7 +105,7 @@ func (repo *Repository) CreateAd(ctx context.Context, payload CreateAdRequestBod
 		RETURNING id
 	`
 
-	err := repo.db.QueryRowContext(
+	err := tx.QueryRowContext(
 		ctx,
 		query,
 		payload.Title,

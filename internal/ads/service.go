@@ -2,8 +2,11 @@ package ads
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
+	"mime/multipart"
 	"strings"
+	filePkg "vietio/internal/file"
 )
 
 var allowedSort = map[string]string{
@@ -14,16 +17,29 @@ var allowedSort = map[string]string{
 type Service struct {
 	repo            *Repository
 	categoryChecker CategoryChecker
+	storage         FileStorage
+	fileRepository  FileRepository
 }
 
 type CategoryChecker interface {
 	Exists(context.Context, int) (bool, error)
 }
 
-func NewService(repo *Repository, categoryChecker CategoryChecker) *Service {
+type FileRepository interface {
+	Save(context.Context, *sql.Tx, filePkg.File) error
+}
+
+func NewService(
+	repo *Repository,
+	categoryChecker CategoryChecker,
+	storage FileStorage,
+	fileRepository FileRepository,
+) *Service {
 	return &Service{
 		repo:            repo,
 		categoryChecker: categoryChecker,
+		storage:         storage,
+		fileRepository:  fileRepository,
 	}
 }
 
@@ -70,8 +86,68 @@ func (s *Service) GetAds(ctx context.Context, params AdsListQueryParams) (AdsLis
 	}, nil
 }
 
-func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody) (CreateAdResponse, error) {
+func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, files []*multipart.FileHeader) (CreateAdResponse, error) {
 	result := CreateAdResponse{}
+
+	errors, err := s.validate(ctx, payload, files)
+	if err != nil {
+		return result, err
+	}
+	if len(errors) > 0 {
+		return result, fmt.Errorf(strings.Join(errors, ";"))
+	}
+
+	tx, err := s.repo.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return result, err
+	}
+	defer tx.Rollback()
+
+	id, err := s.repo.CreateAd(ctx, tx, payload)
+	if err != nil {
+		return result, fmt.Errorf("возникла ошибка при сохранении объявления: %w", err)
+	}
+
+	for i, fileHeader := range files {
+		file, err := fileHeader.Open()
+		if err != nil {
+			return result, err
+		}
+		defer file.Close()
+
+		fileInfo, err := s.storage.Save(ctx, file, fileHeader)
+		if err != nil {
+			return result, err
+		}
+
+		fileModel := filePkg.File{
+			AdId:  id,
+			Path:  fileInfo.FileName,
+			Order: i + 1,
+			Mime:  fileInfo.Mime,
+			Size:  fileInfo.Size,
+		}
+
+		err = s.fileRepository.Save(ctx, tx, fileModel)
+		if err != nil {
+			return result, err
+		}
+	}
+
+	result.Id = id
+
+	if err := tx.Commit(); err != nil {
+		return result, nil
+	}
+
+	return result, err
+}
+
+func (s *Service) validate(
+	ctx context.Context,
+	payload CreateAdRequestBody,
+	files []*multipart.FileHeader,
+) ([]string, error) {
 	var errors []string
 
 	if payload.Title == "" {
@@ -89,22 +165,15 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody) (Cr
 	if payload.CategoryId >= 1 {
 		exists, err := s.categoryChecker.Exists(ctx, payload.CategoryId)
 		if err != nil {
-			return result, fmt.Errorf("ошибка БД при проверки существования категории")
+			return nil, fmt.Errorf("ошибка БД при проверки существования категории")
 		}
 		if !exists {
-            errors = append(errors, "category_id такой категории не существует")
+			errors = append(errors, "category_id такой категории не существует")
 		}
 	}
-
-	if len(errors) > 0 {
-		return result, fmt.Errorf(strings.Join(errors, ";"))
+	if len(files) == 0 || len(files) > 3 {
+		errors = append(errors, "files должен быть > 0 и меньше 3")
 	}
 
-    id, err := s.repo.CreateAd(ctx, payload)
-    if err != nil {
-        return result, fmt.Errorf("возникла ошибка при сохранении объявления: %w", err)
-    }
-	result.Id = id
-
-	return result, nil
+	return errors, nil
 }
