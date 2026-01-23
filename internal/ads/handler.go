@@ -1,7 +1,10 @@
 package ads
 
 import (
+	"errors"
 	"net/http"
+
+	appErrors "vietio/internal/errors"
 	"vietio/internal/response"
 	"vietio/pkg/utils"
 )
@@ -52,8 +55,14 @@ func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 	files := r.MultipartForm.File["files"]
 
 	result, err := h.service.CreateAd(r.Context(), payload, files)
+
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		var validationError *appErrors.ValidationError
+		if errors.As(err, &validationError) {
+			response.Json(w, err, http.StatusBadRequest)
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		return
 	}
 

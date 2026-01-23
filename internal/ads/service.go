@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"mime/multipart"
 	"strings"
+
 	filePkg "vietio/internal/file"
+	appErrors "vietio/internal/errors"
 )
 
 var allowedSort = map[string]string{
@@ -89,12 +91,9 @@ func (s *Service) GetAds(ctx context.Context, params AdsListQueryParams) (AdsLis
 func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, files []*multipart.FileHeader) (CreateAdResponse, error) {
 	result := CreateAdResponse{}
 
-	errors, err := s.validate(ctx, payload, files)
-	if err != nil {
-		return result, err
-	}
-	if len(errors) > 0 {
-		return result, fmt.Errorf(strings.Join(errors, ";"))
+	validationErrors := s.validate(ctx, payload, files)
+	if validationErrors.HasErrors() {
+		return result, validationErrors
 	}
 
 	tx, err := s.repo.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
@@ -147,33 +146,33 @@ func (s *Service) validate(
 	ctx context.Context,
 	payload CreateAdRequestBody,
 	files []*multipart.FileHeader,
-) ([]string, error) {
-	var errors []string
+) *appErrors.ValidationError {
+	errors := appErrors.NewValidationError()
 
 	if payload.Title == "" {
-		errors = append(errors, "title не может быть пустым")
+		errors.Add("title", "title не может быть пустым")
 	}
 	if payload.Description == "" {
-		errors = append(errors, "description не может быть пустым")
+		errors.Add("description", "description не может быть пустым")
 	}
 	if payload.Price < 0 {
-		errors = append(errors, "price не может быть отрицательным")
+		errors.Add("price", "price не может быть отрицательным")
 	}
 	if payload.CategoryId < 1 {
-		errors = append(errors, "category_id должен быть >= 1")
+		errors.Add("category_id", "category_id должен быть >= 1")
 	}
 	if payload.CategoryId >= 1 {
 		exists, err := s.categoryChecker.Exists(ctx, payload.CategoryId)
 		if err != nil {
-			return nil, fmt.Errorf("ошибка БД при проверки существования категории")
+			errors.Add("category_id", "ошибка БД при проверки существования категории")
 		}
 		if !exists {
-			errors = append(errors, "category_id такой категории не существует")
+			errors.Add("category_id", "category_id такой категории не существует")
 		}
 	}
 	if len(files) == 0 || len(files) > 3 {
-		errors = append(errors, "files должен быть > 0 и меньше 3")
+		errors.Add("files", "files должен быть > 0 и меньше 3")
 	}
 
-	return errors, nil
+	return errors
 }
