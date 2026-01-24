@@ -33,3 +33,17 @@ func (r *FileRepository) Save(ctx context.Context, tx *sql.Tx,  file File) error
 
 	return nil
 }
+
+func (r *FileRepository) DeleteByPath(ctx context.Context, path string) error {
+    query := `
+        DELETE FROM files 
+        WHERE path = $1
+    `
+
+    _, err := r.db.Exec(query, path)
+    if err != nil {
+        return err
+    }
+
+    return nil
+}

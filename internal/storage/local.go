@@ -48,3 +48,14 @@ func (s *LocalStorage) Save(
 		Mime: header.Header.Get("Content-Type"),
 	}, nil
 }
+
+func (s *LocalStorage) DeleteByPath(ctx context.Context, path string) error {
+	deletePath := filepath.Join(s.BasePath, path)
+
+	err := os.Remove(deletePath)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -29,6 +29,7 @@ type CategoryChecker interface {
 
 type FileRepository interface {
 	Save(context.Context, *sql.Tx, filePkg.File) error
+	DeleteByPath(context.Context, string) error
 }
 
 func NewService(
