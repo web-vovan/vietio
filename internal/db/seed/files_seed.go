@@ -16,8 +16,15 @@ func runFilesSeed(dbConn *sql.DB) error {
 
     query := `
 		INSERT INTO files (
-			ad_id, path, "order", size, mime
-		) VALUES ($1, $2, $3, $4, $5)
+			ad_id,
+			path, 
+			preview_path, 
+			"order", 
+			size, 
+			preview_size, 
+			mime, 
+			preview_mime
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	`
 	stmt, err := dbConn.Prepare(query)
 	if err != nil {
@@ -27,11 +34,15 @@ func runFilesSeed(dbConn *sql.DB) error {
 
 	for _, id := range adsIds {
 		for i := 0; i < 3; i++ {
+			path := gofakeit.UUID()
 			_, err := stmt.Exec(
 				id,
-				gofakeit.UUID() + ".jpg",
+				path + ".jpg",
+				path + "_preview.jpg",
 				i + 1,
 				rand.Intn(1000),
+				rand.Intn(1000),
+				"image/jpg",
 				"image/jpg",
 			)
 

@@ -7,8 +7,8 @@ import (
 	"mime/multipart"
 	"strings"
 
-	filePkg "vietio/internal/file"
 	appErrors "vietio/internal/errors"
+	filePkg "vietio/internal/file"
 )
 
 var allowedSort = map[string]string{
@@ -121,11 +121,14 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, fil
 		}
 
 		fileModel := filePkg.File{
-			AdId:  id,
-			Path:  fileInfo.FileName,
-			Order: i + 1,
-			Mime:  fileInfo.Mime,
-			Size:  fileInfo.Size,
+			AdId:        id,
+			Path:        fileInfo.FileName,
+			PreviewPath: fileInfo.PreviewFileName,
+			Order:       i + 1,
+			Mime:        fileInfo.Mime,
+			PreviewMime: fileInfo.PreviewMime,
+			Size:        fileInfo.Size,
+			PreviewSize: fileInfo.PreviewSize,
 		}
 
 		err = s.fileRepository.Save(ctx, tx, fileModel)
@@ -174,6 +177,19 @@ func (s *Service) validate(
 	if len(files) == 0 || len(files) > 3 {
 		errors.Add("files", "files должен быть > 0 и меньше 3")
 	}
+
+	// @todo валидация на формат
+	// JPEG / JPG
+	// PNG
+	// HEIC / HEIF (очень важно для iPhone)
+	// WEBP
+
+	// проверка на фронте на mime тип
+	// image/jpeg
+	// image/png
+	// image/webp
+	// image/heic
+	// image/heif
 
 	return errors
 }
