@@ -103,7 +103,7 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, fil
 	}
 	defer tx.Rollback()
 
-	id, err := s.repo.CreateAd(ctx, tx, payload)
+	uuid, err := s.repo.CreateAd(ctx, tx, payload)
 	if err != nil {
 		return result, fmt.Errorf("возникла ошибка при сохранении объявления: %w", err)
 	}
@@ -121,7 +121,7 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, fil
 		}
 
 		fileModel := filePkg.File{
-			AdId:        id,
+			AdUuid:      uuid,
 			Path:        fileInfo.FileName,
 			PreviewPath: fileInfo.PreviewFileName,
 			Order:       i + 1,
@@ -137,7 +137,7 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, fil
 		}
 	}
 
-	result.Id = id
+	result.Uuid = uuid.String()
 
 	if err := tx.Commit(); err != nil {
 		return result, nil

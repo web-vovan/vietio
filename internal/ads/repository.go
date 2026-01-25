@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 type Repository struct {
@@ -40,7 +42,7 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 
 	query := fmt.Sprintf(`
         SELECT
-			id,
+			uuid,
 			title,
             description,
             category_id,
@@ -68,7 +70,7 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 	for rows.Next() {
 		var ad Ad
 		if err := rows.Scan(
-			&ad.ID,
+			&ad.Uuid,
 			&ad.Title,
 			&ad.Description,
 			&ad.CategoryId,
@@ -87,8 +89,8 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 	return result, nil
 }
 
-func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload CreateAdRequestBody) (int, error) {
-	var id int
+func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload CreateAdRequestBody) (uuid.UUID, error) {
+	var uuid uuid.UUID
 
 	query := `
 		INSERT INTO ads (
@@ -102,7 +104,7 @@ func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload Create
 			status
 		)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-		RETURNING id
+		RETURNING uuid
 	`
 
 	err := tx.QueryRowContext(
@@ -116,10 +118,10 @@ func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload Create
 		1,
 		"VDN",
 		1,
-	).Scan(&id)
+	).Scan(&uuid)
 
 	if err != nil {
-		return 0, err
+		return uuid, err
 	}
-	return id, nil
+	return uuid, nil
 }

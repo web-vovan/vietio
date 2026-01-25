@@ -1,6 +1,10 @@
 package ads
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type AdsListQueryParams struct {
 	Page       int
@@ -17,7 +21,7 @@ type AdsListFilterParams struct {
 }
 
 type Ad struct {
-	ID          int
+	Uuid        uuid.UUID
 	Title       string
 	Description string
 	CategoryId  int
@@ -45,5 +49,5 @@ type CreateAdRequestBody struct {
 }
 
 type CreateAdResponse struct {
-	Id int `json:"id"`
+	Uuid string `json:"uuid"`
 }

@@ -1,8 +1,10 @@
 package file
 
+import "github.com/google/uuid"
+
 type File struct {
     Id int64
-    AdId int
+    AdUuid uuid.UUID
     Path string
     PreviewPath string
     Order int

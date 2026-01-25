@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS ads (
-  id bigserial NOT NULL,
+  uuid UUID PRIMARY KEY DEFAULT uuidv7(),
   user_id int8 NOT NULL,
   category_id int8 NOT NULL,
   city_id int8 NOT NULL,
@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS ads (
   expires_at TIMESTAMPTZ NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  CONSTRAINT ads_pkey PRIMARY KEY (id),
   CONSTRAINT ads_category_id_foreign FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
   CONSTRAINT ads_city_id_foreign FOREIGN KEY (city_id) REFERENCES cities(id) ON DELETE SET NULL,
   CONSTRAINT ads_user_id_foreign FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

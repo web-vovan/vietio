@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE if not exists files (
   id bigserial NOT NULL,
-  ad_id int8 NULL,
+  ad_uuid UUID NULL,
   "path" varchar(255) NOT NULL,
   "preview_path" varchar(255) NOT NULL,
   "order" int2 NULL,
@@ -14,7 +14,7 @@ CREATE TABLE if not exists files (
   CONSTRAINT files_pkey PRIMARY KEY (id)
 );
 
-ALTER TABLE files ADD CONSTRAINT files_ad_id_foreign FOREIGN KEY (ad_id) REFERENCES ads(id) ON DELETE SET NULL;
+ALTER TABLE files ADD CONSTRAINT files_ad_id_foreign FOREIGN KEY (ad_uuid) REFERENCES ads(uuid) ON DELETE SET NULL;
 -- +goose StatementEnd
 
 -- +goose Down

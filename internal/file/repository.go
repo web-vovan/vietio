@@ -16,7 +16,7 @@ func NewFileRepository(db *sql.DB) *FileRepository {
 func (r *FileRepository) Save(ctx context.Context, tx *sql.Tx, file File) error {
 	query := `
         INSERT INTO files (
-            ad_id,
+            ad_uuid,
             path,
             preview_path,
             "order",
@@ -30,7 +30,7 @@ func (r *FileRepository) Save(ctx context.Context, tx *sql.Tx, file File) error 
     `
 
 	_, err := tx.ExecContext(ctx, query,
-		file.AdId,
+		file.AdUuid,
 		file.Path,
 		file.PreviewPath,
 		file.Order,

@@ -9,14 +9,14 @@ import (
 )
 
 func runFilesSeed(dbConn *sql.DB) error {
-    adsIds, err := getAllIdsFromTable(dbConn, "ads")
+    adsUuids, err := getAllUuidFromTable(dbConn, "ads")
 	if err != nil {
 		return err
 	}
 
     query := `
 		INSERT INTO files (
-			ad_id,
+			ad_uuid,
 			path, 
 			preview_path, 
 			"order", 
@@ -32,11 +32,11 @@ func runFilesSeed(dbConn *sql.DB) error {
 	}
 	defer stmt.Close()
 
-	for _, id := range adsIds {
+	for _, uuid := range adsUuids {
 		for i := 0; i < 3; i++ {
 			path := gofakeit.UUID()
 			_, err := stmt.Exec(
-				id,
+				uuid,
 				path + ".jpg",
 				path + "_preview.jpg",
 				i + 1,
