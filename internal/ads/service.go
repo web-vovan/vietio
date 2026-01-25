@@ -3,12 +3,15 @@ package ads
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"mime/multipart"
 	"strings"
 
 	appErrors "vietio/internal/errors"
-	filePkg "vietio/internal/file"
+	fileApp "vietio/internal/file"
+
+	"github.com/google/uuid"
 )
 
 var allowedSort = map[string]string{
@@ -28,7 +31,7 @@ type CategoryChecker interface {
 }
 
 type FileRepository interface {
-	Save(context.Context, *sql.Tx, filePkg.File) error
+	Save(context.Context, *sql.Tx, fileApp.FileModel) error
 	DeleteByPath(context.Context, string) error
 }
 
@@ -79,11 +82,23 @@ func (s *Service) GetAds(ctx context.Context, params AdsListQueryParams) (AdsLis
 		Limit:      20,
 	}
 
-	adsListDB, _ := s.repo.FindAds(ctx, filterParams)
+	adsListRepository, _ := s.repo.FindAds(ctx, filterParams)
+	
+	items := make([]AdsListItemResponse, 0, len(adsListRepository.Items))
+
+	for _, model := range adsListRepository.Items {
+		items = append(items, AdsListItemResponse{
+			Uuid:       model.Uuid,
+			Title:      model.Title,
+			CategoryId: model.CategoryId,
+			Price:      model.Price,
+			CreatedAt:  model.CreatedAt,
+		})
+	}
 
 	return AdsListResponse{
-		Items: adsListDB.Items,
-		Total: adsListDB.Total,
+		Items: items,
+		Total: adsListRepository.Total,
 		Limit: filterParams.Limit,
 		Page:  filterParams.Page,
 	}, nil
@@ -120,7 +135,7 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, fil
 			return result, err
 		}
 
-		fileModel := filePkg.File{
+		fileModel := fileApp.FileModel{
 			AdUuid:      uuid,
 			Path:        fileInfo.FileName,
 			PreviewPath: fileInfo.PreviewFileName,
@@ -144,6 +159,28 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, fil
 	}
 
 	return result, err
+}
+
+func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error) {
+	var result AdResponse
+
+	adModel, err := s.repo.FindAdByUuid(ctx, uuid)
+	
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return result, err
+		}
+		return result, err
+	}
+
+	return AdResponse{
+		Uuid:        adModel.Uuid,
+		Title:       adModel.Title,
+		Description: adModel.Description,
+		CategoryId:  adModel.CategoryId,
+		Price:       adModel.Price,
+		CreatedAt:   adModel.CreatedAt,
+	}, nil
 }
 
 func (s *Service) validate(

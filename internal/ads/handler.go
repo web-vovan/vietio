@@ -7,6 +7,8 @@ import (
 	appErrors "vietio/internal/errors"
 	"vietio/internal/response"
 	"vietio/pkg/utils"
+
+	"github.com/google/uuid"
 )
 
 type Handler struct {
@@ -63,6 +65,22 @@ func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 		} else {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		return
+	}
+
+	response.Json(w, result, http.StatusOK)
+}
+
+func (h *Handler) GetAd(w http.ResponseWriter, r *http.Request) {
+	uuid, err := uuid.Parse(r.PathValue("uuid"))
+	if err != nil {
+		http.Error(w, "невалидный uuid в запросе", http.StatusInternalServerError)
+		return
+	}
+
+	result, err := h.service.GetAd(r.Context(), uuid)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

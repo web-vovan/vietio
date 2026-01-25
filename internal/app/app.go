@@ -63,6 +63,7 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	router := http.NewServeMux()
 	router.HandleFunc("GET /api/ads", adsHandler.GetAds)
 	router.HandleFunc("POST /api/ads", adsHandler.CreateAd)
+	router.HandleFunc("GET /api/ads/{uuid}", adsHandler.GetAd)
 
 	server := http.Server{
 		Addr:    ":" + config.Server.HttpPort,

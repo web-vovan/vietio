@@ -19,10 +19,10 @@ func NewRepository(db *sql.DB) *Repository {
 	}
 }
 
-func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams) (AdsListDB, error) {
-	var result AdsListDB
+func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams) (AdsListRepository, error) {
+	var result AdsListRepository
 
-	var ads []Ad
+	var ads []AdModel
 	var total int
 	var conditions []string
 	var args []any
@@ -44,7 +44,6 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
         SELECT
 			uuid,
 			title,
-            description,
             category_id,
             price,
             created_at,
@@ -68,11 +67,10 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 	defer rows.Close()
 
 	for rows.Next() {
-		var ad Ad
+		var ad AdModel
 		if err := rows.Scan(
 			&ad.Uuid,
 			&ad.Title,
-			&ad.Description,
 			&ad.CategoryId,
 			&ad.Price,
 			&ad.CreatedAt,
@@ -124,4 +122,35 @@ func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload Create
 		return uuid, err
 	}
 	return uuid, nil
+}
+
+func (repo *Repository) FindAdByUuid(ctx context.Context, uuid uuid.UUID) (AdModel, error) {
+	var result AdModel
+
+	query := `
+        SELECT
+			uuid,
+			title,
+            description,
+            category_id,
+            price,
+            created_at
+		FROM ads
+		WHERE uuid = $1
+		LIMIT 1
+    `
+
+	err := repo.db.QueryRowContext(ctx, query, uuid).Scan(
+		&result.Uuid,
+		&result.Title,
+		&result.Description,
+		&result.CategoryId,
+		&result.Price,
+		&result.CreatedAt,
+	)
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
 }

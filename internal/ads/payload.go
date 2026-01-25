@@ -20,7 +20,14 @@ type AdsListFilterParams struct {
 	Order      string
 }
 
-type Ad struct {
+type CreateAdRequestBody struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Price       int    `json:"price"`
+	CategoryId  int    `json:"category_id"`
+}
+
+type AdModel struct {
 	Uuid        uuid.UUID
 	Title       string
 	Description string
@@ -29,25 +36,35 @@ type Ad struct {
 	CreatedAt   time.Time
 }
 
-type AdsListDB struct {
-	Items []Ad
+type AdsListRepository struct {
+	Items []AdModel
 	Total int
 }
 
-type AdsListResponse struct {
-	Items []Ad `json:"items"`
-	Total int  `json:"total"`
-	Limit int  `json:"limit"`
-	Page  int  `json:"page"`
+type AdsListItemResponse struct {
+	Uuid       uuid.UUID `json:"uuid"`
+	Title      string    `json:"title"`
+	CategoryId int       `json:"category_id"`
+	Price      int       `json:"price"`
+	CreatedAt  time.Time `json:"created_at"`
 }
 
-type CreateAdRequestBody struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Price       int    `json:"price"`
-	CategoryId  int    `json:"category_id"`
+type AdsListResponse struct {
+	Items []AdsListItemResponse `json:"items"`
+	Total int                   `json:"total"`
+	Limit int                   `json:"limit"`
+	Page  int                   `json:"page"`
 }
 
 type CreateAdResponse struct {
 	Uuid string `json:"uuid"`
+}
+
+type AdResponse struct {
+	Uuid        uuid.UUID `json:"uuid"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	CategoryId  int       `json:"category_id"`
+	Price       int       `json:"price"`
+	CreatedAt   time.Time `json:"created_at"`
 }

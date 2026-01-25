@@ -13,7 +13,7 @@ func NewFileRepository(db *sql.DB) *FileRepository {
 	return &FileRepository{db}
 }
 
-func (r *FileRepository) Save(ctx context.Context, tx *sql.Tx, file File) error {
+func (r *FileRepository) Save(ctx context.Context, tx *sql.Tx, fileModel FileModel) error {
 	query := `
         INSERT INTO files (
             ad_uuid,
@@ -30,14 +30,14 @@ func (r *FileRepository) Save(ctx context.Context, tx *sql.Tx, file File) error 
     `
 
 	_, err := tx.ExecContext(ctx, query,
-		file.AdUuid,
-		file.Path,
-		file.PreviewPath,
-		file.Order,
-		file.Size,
-		file.PreviewSize,
-		file.Mime,
-		file.PreviewMime,
+		fileModel.AdUuid,
+		fileModel.Path,
+		fileModel.PreviewPath,
+		fileModel.Order,
+		fileModel.Size,
+		fileModel.PreviewSize,
+		fileModel.Mime,
+		fileModel.PreviewMime,
 	)
 	if err != nil {
 		return err
