@@ -49,7 +49,7 @@ func RunSeed(dbConn *sql.DB, config *config.Config) {
 func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	adsRepository := ads.NewRepository(dbConn)
 	categoryRepository := categories.NewRepository(dbConn)
-	fileStorage := storage.NewLocalStorage("./uploads")
+	fileStorage := storage.NewLocalStorage(config.Server.PublicFilesBaseUrl, "./uploads")
 	fileRepository := file.NewFileRepository(dbConn)
 
 	adsService := ads.NewService(
@@ -64,6 +64,15 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	router.HandleFunc("GET /api/ads", adsHandler.GetAds)
 	router.HandleFunc("POST /api/ads", adsHandler.CreateAd)
 	router.HandleFunc("GET /api/ads/{uuid}", adsHandler.GetAd)
+
+	// отдаем статику, в дальнейшем переедет в nginx
+	router.Handle(
+		"/uploads/",
+		http.StripPrefix(
+			"/uploads/",
+			http.FileServer(http.Dir("./uploads")),
+		),
+	)
 
 	server := http.Server{
 		Addr:    ":" + config.Server.HttpPort,

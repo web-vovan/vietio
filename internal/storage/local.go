@@ -12,11 +12,13 @@ import (
 )
 
 type LocalStorage struct {
+	PublicFilesBaseUrl string
 	BasePath string
 }
 
-func NewLocalStorage(basePath string) *LocalStorage {
+func NewLocalStorage(publicFilesBaseUrl, basePath string) *LocalStorage {
 	return &LocalStorage{
+		PublicFilesBaseUrl: publicFilesBaseUrl,
 		BasePath: basePath,
 	}
 }
@@ -56,11 +58,8 @@ func (s *LocalStorage) Save(
 		return nil, err
 	}
 
-	ext := filepath.Ext(header.Filename)
-	fileName := uuid.NewString() + ext
-
 	return &ads.FileInfo{
-		FileName: fileName,
+		FileName: fullFileName,
 		PreviewFileName: previewFileName,
 		Size: fullSize,
 		PreviewSize: previewSize,
@@ -78,4 +77,8 @@ func (s *LocalStorage) DeleteByPath(ctx context.Context, path string) error {
 	}
 
 	return nil
+}
+
+func (s *LocalStorage) GetPublicPath(path string) string {
+	return s.PublicFilesBaseUrl + "/uploads/" + path
 }

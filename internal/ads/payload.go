@@ -46,6 +46,8 @@ type AdsListItemResponse struct {
 	Title      string    `json:"title"`
 	CategoryId int       `json:"category_id"`
 	Price      int       `json:"price"`
+	City       string    `json:"city"`
+	Image      string    `json:"image"`
 	CreatedAt  time.Time `json:"created_at"`
 }
 
@@ -66,5 +68,7 @@ type AdResponse struct {
 	Description string    `json:"description"`
 	CategoryId  int       `json:"category_id"`
 	Price       int       `json:"price"`
+	City        string    `json:"city"`
 	CreatedAt   time.Time `json:"created_at"`
+	Images      []string  `json:"images"`
 }

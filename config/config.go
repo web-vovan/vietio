@@ -16,7 +16,8 @@ type Config struct {
 }
 
 type Server struct {
-	HttpPort string
+	HttpPort           string
+	PublicFilesBaseUrl string
 }
 
 type DbConfig struct {
@@ -42,6 +43,11 @@ func Load() *Config {
 		log.Fatal("HTTP_PORT is not set")
 	}
 
+	publicFilesBaseUrl := os.Getenv("PUBLIC_FILES_BASE_URL")
+	if publicFilesBaseUrl == "" {
+		log.Fatal("PUBLIC_FILES_BASE_URL is not set")
+	}
+
 	env := os.Getenv("APP_ENV")
 	if env == "" {
 		log.Fatal("APP_ENV is not set")
@@ -51,7 +57,8 @@ func Load() *Config {
 		SeedFlag: *seedFlag,
 		Env:      env,
 		Server: Server{
-			HttpPort: httpPort,
+			HttpPort:           httpPort,
+			PublicFilesBaseUrl: publicFilesBaseUrl,
 		},
 		Db: DbConfig{
 			Dsn: dsn,

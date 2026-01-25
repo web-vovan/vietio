@@ -23,7 +23,7 @@ type Service struct {
 	repo            *Repository
 	categoryChecker CategoryChecker
 	storage         FileStorage
-	fileRepository  FileRepository
+	fileRepo        FileRepository
 }
 
 type CategoryChecker interface {
@@ -33,6 +33,7 @@ type CategoryChecker interface {
 type FileRepository interface {
 	Save(context.Context, *sql.Tx, fileApp.FileModel) error
 	DeleteByPath(context.Context, string) error
+	FindFilesByAdUuid(context.Context, uuid.UUID) ([]fileApp.FileModel, error)
 }
 
 func NewService(
@@ -45,7 +46,7 @@ func NewService(
 		repo:            repo,
 		categoryChecker: categoryChecker,
 		storage:         storage,
-		fileRepository:  fileRepository,
+		fileRepo:        fileRepository,
 	}
 }
 
@@ -83,7 +84,7 @@ func (s *Service) GetAds(ctx context.Context, params AdsListQueryParams) (AdsLis
 	}
 
 	adsListRepository, _ := s.repo.FindAds(ctx, filterParams)
-	
+
 	items := make([]AdsListItemResponse, 0, len(adsListRepository.Items))
 
 	for _, model := range adsListRepository.Items {
@@ -92,6 +93,7 @@ func (s *Service) GetAds(ctx context.Context, params AdsListQueryParams) (AdsLis
 			Title:      model.Title,
 			CategoryId: model.CategoryId,
 			Price:      model.Price,
+			City:       "Нячанг",
 			CreatedAt:  model.CreatedAt,
 		})
 	}
@@ -146,7 +148,7 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, fil
 			PreviewSize: fileInfo.PreviewSize,
 		}
 
-		err = s.fileRepository.Save(ctx, tx, fileModel)
+		err = s.fileRepo.Save(ctx, tx, fileModel)
 		if err != nil {
 			return result, err
 		}
@@ -165,12 +167,22 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 	var result AdResponse
 
 	adModel, err := s.repo.FindAdByUuid(ctx, uuid)
-	
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return result, err
 		}
 		return result, err
+	}
+
+	adFiles, err := s.fileRepo.FindFilesByAdUuid(ctx, uuid)
+	if err != nil {
+		return result, err
+	}
+
+	var images = make([]string, 0, len(adFiles))
+	for _, file := range adFiles {
+		publicPath := s.storage.GetPublicPath(file.Path)
+		images = append(images, publicPath)
 	}
 
 	return AdResponse{
@@ -179,7 +191,9 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 		Description: adModel.Description,
 		CategoryId:  adModel.CategoryId,
 		Price:       adModel.Price,
+		City:        "Нячанг",
 		CreatedAt:   adModel.CreatedAt,
+		Images:      images,
 	}, nil
 }
 

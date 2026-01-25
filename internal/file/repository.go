@@ -3,6 +3,8 @@ package file
 import (
 	"context"
 	"database/sql"
+
+	"github.com/google/uuid"
 )
 
 type FileRepository struct {
@@ -44,6 +46,49 @@ func (r *FileRepository) Save(ctx context.Context, tx *sql.Tx, fileModel FileMod
 	}
 
 	return nil
+}
+
+func (r *FileRepository) FindFilesByAdUuid(ctx context.Context, uuid uuid.UUID) ([]FileModel, error) {
+	var result []FileModel
+
+	query := `
+		SELECT
+			id,
+			ad_uuid,
+			path,
+			preview_path,
+			"order"
+		FROM
+			files
+		WHERE 
+			ad_uuid = $1
+		ORDER BY
+			"order" ASC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, uuid)
+	if err != nil {
+		return result, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var file FileModel
+
+		if err := rows.Scan(
+			&file.Id,
+			&file.AdUuid,
+			&file.Path,
+			&file.PreviewPath,
+			&file.Order,
+		); err != nil {
+			return result, nil
+		}
+
+		result = append(result, file)
+	}
+
+	return result, nil
 }
 
 func (r *FileRepository) DeleteByPath(ctx context.Context, path string) error {
