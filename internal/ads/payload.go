@@ -37,8 +37,17 @@ type AdModel struct {
 }
 
 type AdsListRepository struct {
-	Items []AdModel
+	Items []AdsListItemRepository
 	Total int
+}
+
+type AdsListItemRepository struct {
+	Uuid        uuid.UUID
+	Title       string
+	CategoryId  int
+	Price       int
+	CreatedAt   time.Time
+	Image       string
 }
 
 type AdsListItemResponse struct {

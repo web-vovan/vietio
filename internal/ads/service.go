@@ -87,14 +87,15 @@ func (s *Service) GetAds(ctx context.Context, params AdsListQueryParams) (AdsLis
 
 	items := make([]AdsListItemResponse, 0, len(adsListRepository.Items))
 
-	for _, model := range adsListRepository.Items {
+	for _, adItem := range adsListRepository.Items {
 		items = append(items, AdsListItemResponse{
-			Uuid:       model.Uuid,
-			Title:      model.Title,
-			CategoryId: model.CategoryId,
-			Price:      model.Price,
+			Uuid:       adItem.Uuid,
+			Title:      adItem.Title,
+			CategoryId: adItem.CategoryId,
+			Price:      adItem.Price,
 			City:       "Нячанг",
-			CreatedAt:  model.CreatedAt,
+			Image:      s.storage.GetPublicPath(adItem.Image),
+			CreatedAt:  adItem.CreatedAt,
 		})
 	}
 

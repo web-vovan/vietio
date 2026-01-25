@@ -22,7 +22,7 @@ func NewRepository(db *sql.DB) *Repository {
 func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams) (AdsListRepository, error) {
 	var result AdsListRepository
 
-	var ads []AdModel
+	var ads []AdsListItemRepository
 	var total int
 	var conditions []string
 	var args []any
@@ -47,10 +47,18 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
             category_id,
             price,
             created_at,
+			COALESCE(f.preview_path, '') as image,
             count(*) over() as total
 		FROM ads
+		LEFT JOIN LATERAL (
+			SELECT preview_path
+			FROM files
+			WHERE files.ad_uuid = ads.uuid
+			ORDER BY created_at ASC
+			LIMIT 1
+		) f ON true
         %s
-        ORDER BY %s %s
+        ORDER BY ads.%s %s
 		LIMIT %d OFFSET %d
     `,
 		where,
@@ -67,13 +75,14 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 	defer rows.Close()
 
 	for rows.Next() {
-		var ad AdModel
+		var ad AdsListItemRepository
 		if err := rows.Scan(
 			&ad.Uuid,
 			&ad.Title,
 			&ad.CategoryId,
 			&ad.Price,
 			&ad.CreatedAt,
+			&ad.Image,
 			&total,
 		); err != nil {
 			return result, err
