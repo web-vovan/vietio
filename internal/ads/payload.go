@@ -42,12 +42,12 @@ type AdsListRepository struct {
 }
 
 type AdsListItemRepository struct {
-	Uuid        uuid.UUID
-	Title       string
-	CategoryId  int
-	Price       int
-	CreatedAt   time.Time
-	Image       string
+	Uuid       uuid.UUID
+	Title      string
+	CategoryId int
+	Price      int
+	CreatedAt  time.Time
+	Image      string
 }
 
 type AdsListItemResponse struct {

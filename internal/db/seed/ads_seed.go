@@ -41,7 +41,7 @@ func runAdsSeed(dbConn *sql.DB) error {
 		title := gofakeit.ProductName()
 		desc := gofakeit.Paragraph(1, 3, 10, " ")
 		price := gofakeit.Number(10000, 50000000)
-		currency := "VDN"
+		currency := "VND"
 		district := districtList[rand.Intn(len(districtList))]
 		status := 1
 		createdAt := gofakeit.DateRange(time.Now().AddDate(0, 0, -15), time.Now())

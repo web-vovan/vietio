@@ -107,10 +107,10 @@ func (s *Service) GetAds(ctx context.Context, params AdsListQueryParams) (AdsLis
 	}, nil
 }
 
-func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, files []*multipart.FileHeader) (CreateAdResponse, error) {
+func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, images []*multipart.FileHeader) (CreateAdResponse, error) {
 	result := CreateAdResponse{}
 
-	validationErrors := s.validate(ctx, payload, files)
+	validationErrors := s.validate(ctx, payload, images)
 	if validationErrors.HasErrors() {
 		return result, validationErrors
 	}
@@ -126,7 +126,7 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, fil
 		return result, fmt.Errorf("возникла ошибка при сохранении объявления: %w", err)
 	}
 
-	for i, fileHeader := range files {
+	for i, fileHeader := range images {
 		file, err := fileHeader.Open()
 		if err != nil {
 			return result, err
@@ -201,7 +201,7 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 func (s *Service) validate(
 	ctx context.Context,
 	payload CreateAdRequestBody,
-	files []*multipart.FileHeader,
+	images []*multipart.FileHeader,
 ) *appErrors.ValidationError {
 	errors := appErrors.NewValidationError()
 
@@ -226,7 +226,7 @@ func (s *Service) validate(
 			errors.Add("category_id", "category_id такой категории не существует")
 		}
 	}
-	if len(files) == 0 || len(files) > 3 {
+	if len(images) == 0 || len(images) > 3 {
 		errors.Add("files", "files должен быть > 0 и меньше 3")
 	}
 

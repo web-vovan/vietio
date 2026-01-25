@@ -54,9 +54,9 @@ func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 		CategoryId:  utils.ParseInt(r.FormValue("category_id"), 0),
 	}
 
-	files := r.MultipartForm.File["files"]
+	images := r.MultipartForm.File["images"]
 
-	result, err := h.service.CreateAd(r.Context(), payload, files)
+	result, err := h.service.CreateAd(r.Context(), payload, images)
 
 	if err != nil {
 		var validationError *appErrors.ValidationError
