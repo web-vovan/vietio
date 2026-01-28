@@ -86,3 +86,43 @@ func (h *Handler) GetAd(w http.ResponseWriter, r *http.Request) {
 
 	response.Json(w, result, http.StatusOK)
 }
+
+func (h *Handler) UpdateAd(w http.ResponseWriter, r *http.Request) {
+	uuid, err := uuid.Parse(r.PathValue("uuid"))
+	if err != nil {
+		http.Error(w, "невалидный uuid в запросе", http.StatusInternalServerError)
+		return
+	}
+
+	// Максимальный размер тела 20 MB
+	err = r.ParseMultipartForm(20 << 20)
+	if err != nil {
+		response.Json(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	payload := UpdateAdRequestBody{
+		Uuid:        uuid,
+		Title:       r.FormValue("title"),
+		Description: r.FormValue("description"),
+		Price:       utils.ParseInt(r.FormValue("price"), 0),
+		CategoryId:  utils.ParseInt(r.FormValue("category_id"), 0),
+		OldImages:   r.Form["old_images"],
+	}
+
+	images := r.MultipartForm.File["images"]
+
+	result, err := h.service.UpdateAd(r.Context(), payload, images)
+
+	if err != nil {
+		var validationError *appErrors.ValidationError
+		if errors.As(err, &validationError) {
+			response.Json(w, err, http.StatusBadRequest)
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	response.Json(w, result, http.StatusOK)
+}

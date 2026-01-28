@@ -163,3 +163,16 @@ func (repo *Repository) FindAdByUuid(ctx context.Context, uuid uuid.UUID) (AdMod
 
 	return result, nil
 }
+
+func (r *Repository) Exists(ctx context.Context, uuid uuid.UUID) (bool, error) {
+    var result bool
+
+    query := `
+		SELECT EXISTS (
+			SELECT 1 FROM ads WHERE uuid = $1
+		)
+	`
+
+    err := r.db.QueryRowContext(ctx, query, uuid).Scan(&result)
+    return result, err
+}

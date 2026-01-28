@@ -27,6 +27,15 @@ type CreateAdRequestBody struct {
 	CategoryId  int    `json:"category_id"`
 }
 
+type UpdateAdRequestBody struct {
+	Uuid        uuid.UUID
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Price       int      `json:"price"`
+	CategoryId  int      `json:"category_id"`
+	OldImages   []string `json:"old_images"`
+}
+
 type AdModel struct {
 	Uuid        uuid.UUID
 	Title       string
@@ -69,6 +78,10 @@ type AdsListResponse struct {
 
 type CreateAdResponse struct {
 	Uuid string `json:"uuid"`
+}
+
+type UpdateAdResponse struct {
+	Result bool `json:"result"`
 }
 
 type AdResponse struct {

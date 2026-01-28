@@ -8,7 +8,6 @@ import (
 	"mime/multipart"
 	"strings"
 
-	appErrors "vietio/internal/errors"
 	fileApp "vietio/internal/file"
 
 	"github.com/google/uuid"
@@ -20,14 +19,10 @@ var allowedSort = map[string]string{
 }
 
 type Service struct {
-	repo            *Repository
-	categoryChecker CategoryChecker
-	storage         FileStorage
-	fileRepo        FileRepository
-}
-
-type CategoryChecker interface {
-	Exists(context.Context, int) (bool, error)
+	repo      *Repository
+	fileRepo  FileRepository
+	storage   FileStorage
+	validator *Validator
 }
 
 type FileRepository interface {
@@ -38,15 +33,15 @@ type FileRepository interface {
 
 func NewService(
 	repo *Repository,
-	categoryChecker CategoryChecker,
-	storage FileStorage,
 	fileRepository FileRepository,
+	storage FileStorage,
+	validator *Validator,
 ) *Service {
 	return &Service{
-		repo:            repo,
-		categoryChecker: categoryChecker,
-		storage:         storage,
-		fileRepo:        fileRepository,
+		repo:      repo,
+		fileRepo:  fileRepository,
+		storage:   storage,
+		validator: validator,
 	}
 }
 
@@ -110,7 +105,7 @@ func (s *Service) GetAds(ctx context.Context, params AdsListQueryParams) (AdsLis
 func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, images []*multipart.FileHeader) (CreateAdResponse, error) {
 	result := CreateAdResponse{}
 
-	validationErrors := s.validate(ctx, payload, images)
+	validationErrors := s.validator.createAdValidate(ctx, payload, images)
 	if validationErrors.HasErrors() {
 		return result, validationErrors
 	}
@@ -198,50 +193,13 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 	}, nil
 }
 
-func (s *Service) validate(
-	ctx context.Context,
-	payload CreateAdRequestBody,
-	images []*multipart.FileHeader,
-) *appErrors.ValidationError {
-	errors := appErrors.NewValidationError()
+func (s *Service) UpdateAd(ctx context.Context, payload UpdateAdRequestBody, images []*multipart.FileHeader) (UpdateAdResponse, error) {
+	result := UpdateAdResponse{}
 
-	if payload.Title == "" {
-		errors.Add("title", "title не может быть пустым")
-	}
-	if payload.Description == "" {
-		errors.Add("description", "description не может быть пустым")
-	}
-	if payload.Price < 0 {
-		errors.Add("price", "price не может быть отрицательным")
-	}
-	if payload.CategoryId < 1 {
-		errors.Add("category_id", "category_id должен быть >= 1")
-	}
-	if payload.CategoryId >= 1 {
-		exists, err := s.categoryChecker.Exists(ctx, payload.CategoryId)
-		if err != nil {
-			errors.Add("category_id", "ошибка БД при проверки существования категории")
-		}
-		if !exists {
-			errors.Add("category_id", "category_id такой категории не существует")
-		}
-	}
-	if len(images) == 0 || len(images) > 3 {
-		errors.Add("files", "files должен быть > 0 и меньше 3")
+	validationErrors := s.validator.updateAdValidate(ctx, payload, images)
+	if validationErrors.HasErrors() {
+		return result, validationErrors
 	}
 
-	// @todo валидация на формат
-	// JPEG / JPG
-	// PNG
-	// HEIC / HEIF (очень важно для iPhone)
-	// WEBP
-
-	// проверка на фронте на mime тип
-	// image/jpeg
-	// image/png
-	// image/webp
-	// image/heic
-	// image/heif
-
-	return errors
+	return result, nil
 }

@@ -51,12 +51,13 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	categoryRepository := categories.NewRepository(dbConn)
 	fileStorage := storage.NewLocalStorage(config.Server.PublicFilesBaseUrl, "./uploads")
 	fileRepository := file.NewFileRepository(dbConn)
+	adValidator := ads.NewValidator(categoryRepository, adsRepository)
 
 	adsService := ads.NewService(
 		adsRepository,
-		categoryRepository,
-		fileStorage,
 		fileRepository,
+		fileStorage,
+		adValidator,
 	)
 	adsHandler := ads.NewHandler(adsService)
 
@@ -64,6 +65,7 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	router.HandleFunc("GET /api/ads", adsHandler.GetAds)
 	router.HandleFunc("POST /api/ads", adsHandler.CreateAd)
 	router.HandleFunc("GET /api/ads/{uuid}", adsHandler.GetAd)
+	router.HandleFunc("PUT /api/ads/{uuid}", adsHandler.UpdateAd)
 
 	// отдаем статику, в дальнейшем переедет в nginx
 	router.Handle(
