@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"net/http"
@@ -49,9 +50,29 @@ func RunSeed(dbConn *sql.DB, config *config.Config) {
 func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	adsRepository := ads.NewRepository(dbConn)
 	categoryRepository := categories.NewRepository(dbConn)
-	fileStorage := storage.NewLocalStorage(config.Server.PublicFilesBaseUrl, "./uploads")
 	fileRepository := file.NewFileRepository(dbConn)
 	adValidator := ads.NewValidator(categoryRepository, adsRepository)
+
+	var fileStorage ads.FileStorage
+	var err error
+
+	switch config.StorageType {
+	case "local":
+		fileStorage = storage.NewLocalStorage(config.Server.PublicUrl, "./uploads")
+	case "s3":
+		fileStorage, err = storage.NewS3Storage(
+			context.Background(),
+			config.S3Storage.Key,
+			config.S3Storage.Secret,
+			config.S3Storage.Bucket,
+			config.S3Storage.PublicUrl,
+		)
+		if err != nil {
+			panic("failed to init s3 storage: " + err.Error())
+		}
+	default:
+		panic("неизвестный тип хранилища: " + config.StorageType)
+	}
 
 	adsService := ads.NewService(
 		adsRepository,
@@ -67,14 +88,16 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	router.HandleFunc("GET /api/ads/{uuid}", adsHandler.GetAd)
 	router.HandleFunc("PUT /api/ads/{uuid}", adsHandler.UpdateAd)
 
-	// отдаем статику, в дальнейшем переедет в nginx
-	router.Handle(
-		"/uploads/",
-		http.StripPrefix(
+	// отдаем статику для локального хранилища
+	if config.StorageType == "local" {
+		router.Handle(
 			"/uploads/",
-			http.FileServer(http.Dir("./uploads")),
-		),
-	)
+			http.StripPrefix(
+				"/uploads/",
+				http.FileServer(http.Dir("./uploads")),
+			),
+		)
+	}
 
 	server := http.Server{
 		Addr:    ":" + config.Server.HttpPort,

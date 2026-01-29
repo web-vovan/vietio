@@ -23,8 +23,9 @@ func runFilesSeed(dbConn *sql.DB) error {
 			size, 
 			preview_size, 
 			mime, 
-			preview_mime
-		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+			preview_mime,
+			storage
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	`
 	stmt, err := dbConn.Prepare(query)
 	if err != nil {
@@ -44,6 +45,7 @@ func runFilesSeed(dbConn *sql.DB) error {
 				rand.Intn(1000),
 				"image/jpg",
 				"image/jpg",
+				"local",
 			)
 
 			if err != nil {

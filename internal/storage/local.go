@@ -12,13 +12,13 @@ import (
 )
 
 type LocalStorage struct {
-	PublicFilesBaseUrl string
+	PublicUrl string
 	BasePath string
 }
 
-func NewLocalStorage(publicFilesBaseUrl, basePath string) *LocalStorage {
+func NewLocalStorage(publicUrl, basePath string) *LocalStorage {
 	return &LocalStorage{
-		PublicFilesBaseUrl: publicFilesBaseUrl,
+		PublicUrl: publicUrl,
 		BasePath: basePath,
 	}
 }
@@ -33,36 +33,45 @@ func (s *LocalStorage) Save(
 		return nil, err
 	}
 
-	fileUUID := uuid.NewString()
-
+	// изображение
 	fullImg := img
 	if img.Bounds().Dx() > 1200 {
 		fullImg = imaging.Resize(img, 1200, 0, imaging.Lanczos)
 	}
 
-	fullFileName := fileUUID + ".jpg"
-	fullPath := filepath.Join(s.BasePath, fullFileName)
-	
-	fullSize, err := saveAsJPG(fullImg, fullPath, 85)
+	fullImgData, err := encodeToJPG(fullImg, 85)
 	if err != nil {
 		return nil, err
 	}
 
+	// превью
 	previewImg := imaging.Resize(fullImg, 300, 0, imaging.Lanczos)
 	
+	previewImgData, err := encodeToJPG(previewImg, 70)
+	if err != nil {
+		return nil, err
+	}
+
+	// сохраняем изображение
+	fileUUID := uuid.NewString()
+	fullFileName := fileUUID + ".jpg"
+	fullPath := filepath.Join(s.BasePath, fullFileName)
+	if err := os.WriteFile(fullPath, fullImgData, 0644); err != nil {
+		return nil, err
+	}
+
+	// сохраняем превью
 	previewFileName := fileUUID + "_preview.jpg"
 	previewPath := filepath.Join(s.BasePath, previewFileName)
-
-	previewSize, err := saveAsJPG(previewImg, previewPath, 70)
-	if err != nil {
+	if err := os.WriteFile(previewPath, previewImgData, 0644); err != nil {
 		return nil, err
 	}
 
 	return &ads.FileInfo{
 		FileName: fullFileName,
 		PreviewFileName: previewFileName,
-		Size: fullSize,
-		PreviewSize: previewSize,
+		Size: int64(len(fullImgData)),
+		PreviewSize: int64(len(previewImgData)),
 		Mime: "image/jpg",
 		PreviewMime: "image/jpg",
 	}, nil
@@ -80,5 +89,9 @@ func (s *LocalStorage) DeleteByPath(ctx context.Context, path string) error {
 }
 
 func (s *LocalStorage) GetPublicPath(path string) string {
-	return s.PublicFilesBaseUrl + "/uploads/" + path
+	return s.PublicUrl + "/uploads/" + path
+}
+
+func (s *LocalStorage) GetType() string {
+	return "local"
 }

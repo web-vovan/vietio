@@ -1,11 +1,11 @@
 package storage
 
 import (
+	"bytes"
 	"fmt"
 	"image"
 	"mime/multipart"
 	"net/http"
-	"os"
 
 	"github.com/adrium/goheif"
 	"github.com/disintegration/imaging"
@@ -53,17 +53,13 @@ func decodeImage(file multipart.File) (image.Image, error) {
 	}
 }
 
-// сохраняет картинку как jpg
-func saveAsJPG(img image.Image, path string, quality int) (int64, error) {
-	err := imaging.Save(img, path, imaging.JPEGQuality(quality))
+func encodeToJPG(img image.Image, quality int) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	// imaging.Encode пишет результат в буфер (в память)
+	err := imaging.Encode(buf, img, imaging.JPEG, imaging.JPEGQuality(quality))
 	if err != nil {
-		return 0, fmt.Errorf("failed to save image to %s: %w", path, err)
+		return nil, fmt.Errorf("failed to encode image: %w", err)
 	}
 
-	info, err := os.Stat(path)
-	if err != nil {
-		return 0, err
-	}
-
-	return info.Size(), nil
+	return buf.Bytes(), nil
 }

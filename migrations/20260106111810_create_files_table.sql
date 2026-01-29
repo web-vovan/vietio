@@ -10,6 +10,7 @@ CREATE TABLE if not exists files (
   "preview_size" int NULL,
   "mime" varchar(255) NULL,
   "preview_mime" varchar(255) NULL,
+  "storage" varchar(255) NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   CONSTRAINT files_pkey PRIMARY KEY (id)
 );

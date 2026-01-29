@@ -9,15 +9,24 @@ import (
 )
 
 type Config struct {
-	SeedFlag bool
-	Env      string
-	Server   Server
-	Db       DbConfig
+	SeedFlag    bool
+	Env         string
+	Server      Server
+	S3Storage   S3Storage
+	StorageType string
+	Db          DbConfig
 }
 
 type Server struct {
-	HttpPort           string
-	PublicFilesBaseUrl string
+	HttpPort  string
+	PublicUrl string
+}
+
+type S3Storage struct {
+	Key       string
+	Secret    string
+	Bucket    string
+	PublicUrl string
 }
 
 type DbConfig struct {
@@ -43,9 +52,9 @@ func Load() *Config {
 		log.Fatal("HTTP_PORT is not set")
 	}
 
-	publicFilesBaseUrl := os.Getenv("PUBLIC_FILES_BASE_URL")
-	if publicFilesBaseUrl == "" {
-		log.Fatal("PUBLIC_FILES_BASE_URL is not set")
+	publicUrl := os.Getenv("PUBLIC_URL")
+	if publicUrl == "" {
+		log.Fatal("PUBLIC_URL is not set")
 	}
 
 	env := os.Getenv("APP_ENV")
@@ -53,13 +62,45 @@ func Load() *Config {
 		log.Fatal("APP_ENV is not set")
 	}
 
+	s3Bucket := os.Getenv("S3_BUCKET")
+	if s3Bucket == "" {
+		log.Fatal("S3_BUCKET is not set")
+	}
+
+	s3Key := os.Getenv("S3_KEY")
+	if s3Key == "" {
+		log.Fatal("S3_KEY is not set")
+	}
+
+	s3Secret := os.Getenv("S3_SECRET")
+	if s3Secret == "" {
+		log.Fatal("S3_SECRET is not set")
+	}
+
+	s3PublicUrl := os.Getenv("S3_PUBLIC_URL")
+	if s3PublicUrl == "" {
+		log.Fatal("S3_PUBLIC_URL is not set")
+	}
+
+	storageType := os.Getenv("STORAGE_TYPE")
+	if storageType == "" {
+		log.Fatal("STORAGE_TYPE is not set")
+	}
+
 	return &Config{
 		SeedFlag: *seedFlag,
 		Env:      env,
 		Server: Server{
-			HttpPort:           httpPort,
-			PublicFilesBaseUrl: publicFilesBaseUrl,
+			HttpPort:  httpPort,
+			PublicUrl: publicUrl,
 		},
+		S3Storage: S3Storage{
+			Key:       s3Key,
+			Secret:    s3Secret,
+			Bucket:    s3Bucket,
+			PublicUrl: s3PublicUrl,
+		},
+		StorageType: storageType,
 		Db: DbConfig{
 			Dsn: dsn,
 		},

@@ -25,9 +25,10 @@ func (r *FileRepository) Save(ctx context.Context, tx *sql.Tx, fileModel FileMod
             size,
             preview_size,
             mime,
-            preview_mime
+            preview_mime,
+			storage
         ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8
+            $1, $2, $3, $4, $5, $6, $7, $8, $9
         )
     `
 
@@ -40,6 +41,7 @@ func (r *FileRepository) Save(ctx context.Context, tx *sql.Tx, fileModel FileMod
 		fileModel.PreviewSize,
 		fileModel.Mime,
 		fileModel.PreviewMime,
+		fileModel.Storage,
 	)
 	if err != nil {
 		return err

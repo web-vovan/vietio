@@ -142,6 +142,7 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, ima
 			PreviewMime: fileInfo.PreviewMime,
 			Size:        fileInfo.Size,
 			PreviewSize: fileInfo.PreviewSize,
+			Storage:     s.storage.GetType(),
 		}
 
 		err = s.fileRepo.Save(ctx, tx, fileModel)
@@ -221,8 +222,6 @@ func (s *Service) UpdateAd(ctx context.Context, payload UpdateAdRequestBody, ima
 	if err != nil {
 		return result, err
 	}
-
-	
 
 	if err := tx.Commit(); err != nil {
 		return result, nil
