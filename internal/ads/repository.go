@@ -133,6 +133,35 @@ func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload Create
 	return uuid, nil
 }
 
+func (repo *Repository) UpdateAd(ctx context.Context, tx *sql.Tx, ad AdModel) error {
+	query := `
+		UPDATE ads
+		SET
+			title = $1,
+			description = $2,
+			price = $3,
+			category_id = $4,
+			updated_at = now()
+		WHERE 
+			uuid = $5
+	`
+
+	_, err := tx.ExecContext(
+		ctx,
+		query,
+		ad.Title,
+		ad.Description,
+		ad.Price,
+		ad.CategoryId,
+		ad.Uuid,
+	)
+	if err != nil {
+		return err
+	}
+	
+	return nil
+}
+
 func (repo *Repository) FindAdByUuid(ctx context.Context, uuid uuid.UUID) (AdModel, error) {
 	var result AdModel
 

@@ -201,5 +201,32 @@ func (s *Service) UpdateAd(ctx context.Context, payload UpdateAdRequestBody, ima
 		return result, validationErrors
 	}
 
-	return result, nil
+	tx, err := s.repo.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return result, err
+	}
+	defer tx.Rollback()
+
+	ad, err := s.repo.FindAdByUuid(ctx, payload.Uuid)
+	if err != nil {
+		return result, err
+	}
+
+	ad.Title = payload.Title
+	ad.Description = payload.Description
+	ad.Price = payload.Price
+	ad.CategoryId = payload.CategoryId
+
+	err = s.repo.UpdateAd(ctx, tx, ad)
+	if err != nil {
+		return result, err
+	}
+
+	
+
+	if err := tx.Commit(); err != nil {
+		return result, nil
+	}
+
+	return result, err
 }
