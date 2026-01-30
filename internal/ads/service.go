@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"mime/multipart"
+	"net/url"
+	"path"
 	"strings"
 
 	fileApp "vietio/internal/file"
@@ -27,7 +29,7 @@ type Service struct {
 
 type FileRepository interface {
 	Save(context.Context, *sql.Tx, fileApp.FileModel) error
-	DeleteByPath(context.Context, string) error
+	DeleteById(context.Context, *sql.Tx, int64) error
 	FindFilesByAdUuid(context.Context, uuid.UUID) ([]fileApp.FileModel, error)
 }
 
@@ -121,34 +123,9 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, ima
 		return result, fmt.Errorf("возникла ошибка при сохранении объявления: %w", err)
 	}
 
-	for i, fileHeader := range images {
-		file, err := fileHeader.Open()
-		if err != nil {
-			return result, err
-		}
-		defer file.Close()
-
-		fileInfo, err := s.storage.Save(ctx, file, fileHeader)
-		if err != nil {
-			return result, err
-		}
-
-		fileModel := fileApp.FileModel{
-			AdUuid:      uuid,
-			Path:        fileInfo.FileName,
-			PreviewPath: fileInfo.PreviewFileName,
-			Order:       i + 1,
-			Mime:        fileInfo.Mime,
-			PreviewMime: fileInfo.PreviewMime,
-			Size:        fileInfo.Size,
-			PreviewSize: fileInfo.PreviewSize,
-			Storage:     s.storage.GetType(),
-		}
-
-		err = s.fileRepo.Save(ctx, tx, fileModel)
-		if err != nil {
-			return result, err
-		}
+	err = s.saveNewImages(ctx, tx, uuid, images)
+	if err != nil {
+		return result, err
 	}
 
 	result.Uuid = uuid.String()
@@ -223,9 +200,92 @@ func (s *Service) UpdateAd(ctx context.Context, payload UpdateAdRequestBody, ima
 		return result, err
 	}
 
+	var oldImagesMap = make(map[string]bool)
+
+	for _, i := range payload.OldImages {
+		u, err := url.Parse(i)
+		if err != nil {
+			return result, err
+		}
+		oldImagesMap[path.Base(u.Path)] = true
+	}
+
+	oldFiles, err := s.fileRepo.FindFilesByAdUuid(ctx, payload.Uuid)
+	if err != nil {
+		return result, err
+	}
+
+	var filesToDelete []fileApp.FileModel
+
+	for _, f := range oldFiles {
+		if _, ok := oldImagesMap[f.Path]; !ok {
+			filesToDelete = append(filesToDelete, f)
+		}
+	}
+
+	for _, f := range filesToDelete {
+		err = s.fileRepo.DeleteById(ctx, tx, f.Id)
+		if err != nil {
+			return result, err
+		}
+
+		err = s.storage.DeleteByPath(ctx, f.Path)
+		if err != nil {
+			return result, err
+		}
+
+		err = s.storage.DeleteByPath(ctx, f.PreviewPath)
+		if err != nil {
+			return result, err
+		}
+	}
+
+	err = s.saveNewImages(ctx, tx, payload.Uuid, images)
+	if err != nil {
+		return result, err
+	}
+
 	if err := tx.Commit(); err != nil {
 		return result, nil
 	}
 
 	return result, err
+}
+
+func (s *Service) saveNewImages(
+	ctx context.Context,
+	tx *sql.Tx,
+	adUuid uuid.UUID,
+	images []*multipart.FileHeader,
+) error {
+	for _, fileHeader := range images {
+		file, err := fileHeader.Open()
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		fileInfo, err := s.storage.Save(ctx, file, fileHeader)
+		if err != nil {
+			return err
+		}
+
+		fileModel := fileApp.FileModel{
+			AdUuid:      adUuid,
+			Path:        fileInfo.FileName,
+			PreviewPath: fileInfo.PreviewFileName,
+			Mime:        fileInfo.Mime,
+			PreviewMime: fileInfo.PreviewMime,
+			Size:        fileInfo.Size,
+			PreviewSize: fileInfo.PreviewSize,
+			Storage:     s.storage.GetType(),
+		}
+
+		err = s.fileRepo.Save(ctx, tx, fileModel)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

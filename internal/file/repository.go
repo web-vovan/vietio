@@ -21,14 +21,13 @@ func (r *FileRepository) Save(ctx context.Context, tx *sql.Tx, fileModel FileMod
             ad_uuid,
             path,
             preview_path,
-            "order",
             size,
             preview_size,
             mime,
             preview_mime,
 			storage
         ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9
+            $1, $2, $3, $4, $5, $6, $7, $8
         )
     `
 
@@ -36,7 +35,6 @@ func (r *FileRepository) Save(ctx context.Context, tx *sql.Tx, fileModel FileMod
 		fileModel.AdUuid,
 		fileModel.Path,
 		fileModel.PreviewPath,
-		fileModel.Order,
 		fileModel.Size,
 		fileModel.PreviewSize,
 		fileModel.Mime,
@@ -58,14 +56,13 @@ func (r *FileRepository) FindFilesByAdUuid(ctx context.Context, uuid uuid.UUID) 
 			id,
 			ad_uuid,
 			path,
-			preview_path,
-			"order"
+			preview_path
 		FROM
 			files
 		WHERE 
 			ad_uuid = $1
 		ORDER BY
-			"order" ASC
+			id ASC
 	`
 
 	rows, err := r.db.QueryContext(ctx, query, uuid)
@@ -82,7 +79,6 @@ func (r *FileRepository) FindFilesByAdUuid(ctx context.Context, uuid uuid.UUID) 
 			&file.AdUuid,
 			&file.Path,
 			&file.PreviewPath,
-			&file.Order,
 		); err != nil {
 			return result, nil
 		}
@@ -93,13 +89,13 @@ func (r *FileRepository) FindFilesByAdUuid(ctx context.Context, uuid uuid.UUID) 
 	return result, nil
 }
 
-func (r *FileRepository) DeleteByPath(ctx context.Context, path string) error {
+func (r *FileRepository) DeleteById(ctx context.Context, tx *sql.Tx, id int64) error {
 	query := `
         DELETE FROM files 
-        WHERE path = $1
+        WHERE id = $1
     `
 
-	_, err := r.db.Exec(query, path)
+	_, err := r.db.Exec(query, id)
 	if err != nil {
 		return err
 	}

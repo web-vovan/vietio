@@ -5,7 +5,6 @@ CREATE TABLE if not exists files (
   ad_uuid UUID NULL,
   "path" varchar(255) NOT NULL,
   "preview_path" varchar(255) NOT NULL,
-  "order" int2 NULL,
   "size" int NULL,
   "preview_size" int NULL,
   "mime" varchar(255) NULL,

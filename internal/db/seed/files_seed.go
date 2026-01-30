@@ -19,13 +19,12 @@ func runFilesSeed(dbConn *sql.DB) error {
 			ad_uuid,
 			path, 
 			preview_path, 
-			"order", 
 			size, 
 			preview_size, 
 			mime, 
 			preview_mime,
 			storage
-		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	`
 	stmt, err := dbConn.Prepare(query)
 	if err != nil {
@@ -40,7 +39,6 @@ func runFilesSeed(dbConn *sql.DB) error {
 				uuid,
 				path + ".jpg",
 				path + "_preview.jpg",
-				i + 1,
 				rand.Intn(1000),
 				rand.Intn(1000),
 				"image/jpg",

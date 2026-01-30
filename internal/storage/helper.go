@@ -9,6 +9,7 @@ import (
 
 	"github.com/adrium/goheif"
 	"github.com/disintegration/imaging"
+	"golang.org/x/image/webp"
 )
 
 // определяет формат по содержимому и декодирует картинку
@@ -33,6 +34,13 @@ func decodeImage(file multipart.File) (image.Image, error) {
 		img, err := imaging.Decode(file)
 		if err != nil {
 			return nil, fmt.Errorf("failed to decode standard image: %w", err)
+		}
+		return img, nil
+
+	case "image/webp":
+		img, err := webp.Decode(file)
+		if err != nil {
+			return nil, fmt.Errorf("failed to decode webp: %w", err)
 		}
 		return img, nil
 

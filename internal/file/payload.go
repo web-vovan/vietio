@@ -7,7 +7,6 @@ type FileModel struct {
 	AdUuid      uuid.UUID
 	Path        string
 	PreviewPath string
-	Order       int
 	Size        int64
 	PreviewSize int64
 	Mime        string
