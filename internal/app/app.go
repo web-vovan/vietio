@@ -8,6 +8,7 @@ import (
 
 	"vietio/config"
 	"vietio/internal/ads"
+	"vietio/internal/auth"
 	"vietio/internal/categories"
 	"vietio/internal/db/seed"
 	"vietio/internal/file"
@@ -82,11 +83,19 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	)
 	adsHandler := ads.NewHandler(adsService)
 
+	authService := auth.NewService(config)
+	authHandler := auth.NewHandler(authService)
+
 	router := http.NewServeMux()
 	router.HandleFunc("GET /api/ads", adsHandler.GetAds)
 	router.HandleFunc("POST /api/ads", adsHandler.CreateAd)
 	router.HandleFunc("GET /api/ads/{uuid}", adsHandler.GetAd)
 	router.HandleFunc("PUT /api/ads/{uuid}", adsHandler.UpdateAd)
+	router.HandleFunc("POST /api/auth/login", authHandler.GetToken)
+
+	if config.Env == "dev" {
+		router.HandleFunc("/api/test-init-data/{username}", authHandler.GetTestInitData)
+	}
 
 	// отдаем статику для локального хранилища
 	if config.StorageType == "local" {
@@ -106,3 +115,4 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 
 	server.ListenAndServe()
 }
+

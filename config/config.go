@@ -9,12 +9,13 @@ import (
 )
 
 type Config struct {
-	SeedFlag    bool
-	Env         string
-	Server      Server
-	S3Storage   S3Storage
-	StorageType string
-	Db          DbConfig
+	SeedFlag         bool
+	Env              string
+	BotToken         string
+	Server           Server
+	S3Storage        S3Storage
+	StorageType      string
+	Db               DbConfig
 }
 
 type Server struct {
@@ -87,9 +88,14 @@ func Load() *Config {
 		log.Fatal("STORAGE_TYPE is not set")
 	}
 
+	botToken := os.Getenv("BOT_TOKEN")
+	if botToken == "" {
+		log.Fatal("BOT_TOKEN is not set")
+	}
+
 	return &Config{
-		SeedFlag: *seedFlag,
-		Env:      env,
+		SeedFlag:         *seedFlag,
+		Env:              env,
 		Server: Server{
 			HttpPort:  httpPort,
 			PublicUrl: publicUrl,
@@ -101,6 +107,7 @@ func Load() *Config {
 			PublicUrl: s3PublicUrl,
 		},
 		StorageType: storageType,
+		BotToken:    botToken,
 		Db: DbConfig{
 			Dsn: dsn,
 		},
