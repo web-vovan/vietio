@@ -9,13 +9,14 @@ import (
 )
 
 type Config struct {
-	SeedFlag         bool
-	Env              string
-	BotToken         string
-	Server           Server
-	S3Storage        S3Storage
-	StorageType      string
-	Db               DbConfig
+	SeedFlag    bool
+	Env         string
+	BotToken    string
+	Server      Server
+	S3Storage   S3Storage
+	StorageType string
+	Db          DbConfig
+	JwtSecret   string
 }
 
 type Server struct {
@@ -93,9 +94,14 @@ func Load() *Config {
 		log.Fatal("BOT_TOKEN is not set")
 	}
 
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		log.Fatal("JWT_SECRET is not set")
+	}
+
 	return &Config{
-		SeedFlag:         *seedFlag,
-		Env:              env,
+		SeedFlag: *seedFlag,
+		Env:      env,
 		Server: Server{
 			HttpPort:  httpPort,
 			PublicUrl: publicUrl,
@@ -111,5 +117,6 @@ func Load() *Config {
 		Db: DbConfig{
 			Dsn: dsn,
 		},
+		JwtSecret: jwtSecret,
 	}
 }

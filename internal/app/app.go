@@ -13,6 +13,7 @@ import (
 	"vietio/internal/db/seed"
 	"vietio/internal/file"
 	"vietio/internal/storage"
+	"vietio/internal/user"
 	"vietio/migrations"
 )
 
@@ -83,7 +84,9 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	)
 	adsHandler := ads.NewHandler(adsService)
 
-	authService := auth.NewService(config)
+	authValidator := auth.NewValidator()
+	userRepository := user.NewRepository(dbConn)
+	authService := auth.NewService(config, authValidator, userRepository)
 	authHandler := auth.NewHandler(authService)
 
 	router := http.NewServeMux()
