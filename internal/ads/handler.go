@@ -78,6 +78,9 @@ func (h *Handler) GetAd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// fmt.Println(r.Context().Value(middleware.UserIdKey).(int64))
+	
+
 	result, err := h.service.GetAd(r.Context(), uuid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

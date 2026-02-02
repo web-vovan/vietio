@@ -15,6 +15,7 @@ import (
 	"vietio/internal/storage"
 	"vietio/internal/user"
 	"vietio/migrations"
+	"vietio/internal/middleware"
 )
 
 func RunMigrations(dbConn *sql.DB) {
@@ -89,10 +90,16 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	authService := auth.NewService(config, authValidator, userRepository)
 	authHandler := auth.NewHandler(authService)
 
+	// middleware
+	authMiddleware := middleware.AuthJWT(authService)
+
 	router := http.NewServeMux()
 	router.HandleFunc("GET /api/ads", adsHandler.GetAds)
 	router.HandleFunc("POST /api/ads", adsHandler.CreateAd)
-	router.HandleFunc("GET /api/ads/{uuid}", adsHandler.GetAd)
+	router.Handle(
+		"GET /api/ads/{uuid}",
+		authMiddleware(http.HandlerFunc(adsHandler.GetAd)),
+	)
 	router.HandleFunc("PUT /api/ads/{uuid}", adsHandler.UpdateAd)
 	router.HandleFunc("POST /api/auth/login", authHandler.GetToken)
 
