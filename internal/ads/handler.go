@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"vietio/internal/authctx"
 	appErrors "vietio/internal/errors"
 	"vietio/internal/response"
 	"vietio/pkg/utils"
@@ -77,9 +78,6 @@ func (h *Handler) GetAd(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "невалидный uuid в запросе", http.StatusInternalServerError)
 		return
 	}
-
-	// fmt.Println(r.Context().Value(middleware.UserIdKey).(int64))
-	
 
 	result, err := h.service.GetAd(r.Context(), uuid)
 	if err != nil {

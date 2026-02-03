@@ -21,20 +21,20 @@ func NewValidator() *Validator {
 }
 
 func (v *Validator) ValidateWebAppData(initData string, botToken string) (*TelegramUser, error) {
-	// 1. Парсим строку запроса (query string)
+	// Парсим строку запроса (query string)
 	values, err := url.ParseQuery(initData)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse init data: %w", err)
 	}
 
-	// 2. Получаем хеш и удаляем его из списка параметров
+	// Получаем хеш и удаляем его из списка параметров
 	receivedHash := values.Get("hash")
 	if receivedHash == "" {
 		return nil, errors.New("hash is missing")
 	}
 	values.Del("hash")
 
-	// 3. Проверка времени (защита от Replay Attack)
+	// Проверка времени (защита от Replay Attack)
 	// Данные валидны только в течение определенного времени (например, 24 часа)
 	authDateStr := values.Get("auth_date")
 	if authDateStr == "" {
@@ -49,34 +49,34 @@ func (v *Validator) ValidateWebAppData(initData string, botToken string) (*Teleg
 		return nil, errors.New("init data is expired")
 	}
 
-	// 4. Сортируем ключи по алфавиту
+	// Сортируем ключи по алфавиту
 	var keys []string
 	for k := range values {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 
-	// 5. Формируем строку проверки: key=value\nkey=value
+	// Формируем строку проверки: key=value\nkey=value
 	var dataCheckParts []string
 	for _, k := range keys {
 		dataCheckParts = append(dataCheckParts, fmt.Sprintf("%s=%s", k, values.Get(k)))
 	}
 	dataCheckString := strings.Join(dataCheckParts, "\n")
 
-	// 6. Вычисляем секретный ключ
+	// Вычисляем секретный ключ
 	// Secret key = HMAC_SHA256("WebAppData", BotToken)
 	secretKey := hmacSha256([]byte("WebAppData"), []byte(botToken))
 
-	// 7. Вычисляем хеш от строки проверки
+	// Вычисляем хеш от строки проверки
 	// Hash = HMAC_SHA256(SecretKey, DataCheckString)
 	calculatedHash := hex.EncodeToString(hmacSha256(secretKey, []byte(dataCheckString)))
 
-	// 8. Сравниваем полученный хеш с вычисленным
+	// Сравниваем полученный хеш с вычисленным
 	if calculatedHash != receivedHash {
 		return nil, errors.New("invalid hash signature")
 	}
 
-	// 9. Если всё ок — парсим пользователя
+	// Если всё ок — парсим пользователя
 	userJSON := values.Get("user")
 	var user TelegramUser
 	if err := json.Unmarshal([]byte(userJSON), &user); err != nil {

@@ -6,11 +6,8 @@ import (
 	"strings"
 
 	"vietio/internal/auth"
+	"vietio/internal/authctx"
 )
-
-type contextKey string
-
-const UserIdKey contextKey = "user_id"
 
 func AuthJWT(authService *auth.Service) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
@@ -35,7 +32,7 @@ func AuthJWT(authService *auth.Service) func(http.Handler) http.Handler {
 				return
 			}
 
-			ctx := context.WithValue(r.Context(), UserIdKey, claims.UserId)
+			ctx := context.WithValue(r.Context(), authctx.UserIdKey, claims.UserId)
 
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
