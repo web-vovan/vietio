@@ -111,7 +111,7 @@ func (s *S3Storage) uploadObject(ctx context.Context, key string, data []byte) e
 	return err
 }
 
-func (s *S3Storage) DeleteByPath(ctx context.Context, path string) error {
+func (s *S3Storage) DeleteByPath(ctx context.Context, path string) error {	
 	_, err := s.client.DeleteObject(ctx, &s3.DeleteObjectInput{
 		Bucket: aws.String(s.bucketName),
 		Key:    aws.String(path),

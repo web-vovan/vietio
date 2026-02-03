@@ -12,10 +12,10 @@ import (
 	"vietio/internal/categories"
 	"vietio/internal/db/seed"
 	"vietio/internal/file"
+	"vietio/internal/middleware"
 	"vietio/internal/storage"
 	"vietio/internal/user"
 	"vietio/migrations"
-	"vietio/internal/middleware"
 )
 
 func RunMigrations(dbConn *sql.DB) {
@@ -94,14 +94,28 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 	authMiddleware := middleware.AuthJWT(authService)
 
 	router := http.NewServeMux()
+
+	// публичные роуты
 	router.HandleFunc("GET /api/ads", adsHandler.GetAds)
-	router.HandleFunc("POST /api/ads", adsHandler.CreateAd)
+	router.HandleFunc("POST /api/auth/login", authHandler.GetToken)
+
+	// роуты с авторизацией
 	router.Handle(
 		"GET /api/ads/{uuid}",
 		authMiddleware(http.HandlerFunc(adsHandler.GetAd)),
 	)
-	router.HandleFunc("PUT /api/ads/{uuid}", adsHandler.UpdateAd)
-	router.HandleFunc("POST /api/auth/login", authHandler.GetToken)
+	router.Handle(
+		"POST /api/ads",
+		authMiddleware(http.HandlerFunc(adsHandler.CreateAd)),
+	)
+	router.Handle(
+		"PUT /api/ads/{uuid}", 
+		authMiddleware(http.HandlerFunc(adsHandler.UpdateAd)),
+	)
+	router.Handle(
+		"DELETE /api/ads/{uuid}", 
+		authMiddleware(http.HandlerFunc(adsHandler.DeleteAd)),
+	)
 
 	if config.Env == "dev" {
 		router.HandleFunc("/api/test-init-data/{username}", authHandler.GetTestInitData)
@@ -125,4 +139,3 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 
 	server.ListenAndServe()
 }
-

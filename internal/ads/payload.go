@@ -40,6 +40,7 @@ type AdModel struct {
 	Uuid        uuid.UUID
 	Title       string
 	Description string
+	UserId      int64
 	CategoryId  int
 	Price       int
 	CreatedAt   time.Time
@@ -84,6 +85,10 @@ type UpdateAdResponse struct {
 	Result bool `json:"result"`
 }
 
+type DeleteAdResponse struct {
+	Result bool `json:"result"`
+}
+
 type AdResponse struct {
 	Uuid        uuid.UUID `json:"uuid"`
 	Title       string    `json:"title"`
@@ -92,5 +97,6 @@ type AdResponse struct {
 	Price       int       `json:"price"`
 	City        string    `json:"city"`
 	CreatedAt   time.Time `json:"created_at"`
+	IsOwner     bool      `json:"is_owner"`
 	Images      []string  `json:"images"`
 }

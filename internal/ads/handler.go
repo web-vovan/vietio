@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 
-	"vietio/internal/authctx"
 	appErrors "vietio/internal/errors"
 	"vietio/internal/response"
 	"vietio/pkg/utils"
@@ -122,6 +121,23 @@ func (h *Handler) UpdateAd(w http.ResponseWriter, r *http.Request) {
 		} else {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		return
+	}
+
+	response.Json(w, result, http.StatusOK)
+}
+
+func (h *Handler) DeleteAd(w http.ResponseWriter, r *http.Request) {
+	uuid, err := uuid.Parse(r.PathValue("uuid"))
+	if err != nil {
+		http.Error(w, "невалидный uuid в запросе", http.StatusInternalServerError)
+		return
+	}
+
+	result, err := h.service.DeleteAd(r.Context(), uuid)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

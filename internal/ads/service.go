@@ -10,6 +10,7 @@ import (
 	"path"
 	"strings"
 
+	"vietio/internal/authctx"
 	fileApp "vietio/internal/file"
 
 	"github.com/google/uuid"
@@ -167,6 +168,7 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 		Price:       adModel.Price,
 		City:        "Нячанг",
 		CreatedAt:   adModel.CreatedAt,
+		IsOwner:     adModel.UserId == authctx.GeUserIdFromContext(ctx),
 		Images:      images,
 	}, nil
 }
@@ -248,6 +250,57 @@ func (s *Service) UpdateAd(ctx context.Context, payload UpdateAdRequestBody, ima
 	if err := tx.Commit(); err != nil {
 		return result, nil
 	}
+
+	return result, err
+}
+
+func (s *Service) DeleteAd(ctx context.Context, uuid uuid.UUID) (DeleteAdResponse, error) {
+	result := DeleteAdResponse{}
+	contextUserId := authctx.GeUserIdFromContext(ctx)
+
+	tx, err := s.repo.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return result, err
+	}
+	defer tx.Rollback()
+
+	ad, err := s.repo.FindAdByUuid(ctx, uuid)
+	if err != nil {
+		return result, err
+	}
+
+	if ad.UserId != contextUserId {
+		return result, errors.New("нет прав")
+	}
+
+	files, err := s.fileRepo.FindFilesByAdUuid(ctx, uuid)
+	if err != nil {
+		return result, err
+	}
+
+	for _, f := range files {
+		err = s.fileRepo.DeleteById(ctx, tx, f.Id)
+		if err != nil {
+			return result, err
+		}
+
+		err = s.storage.DeleteByPath(ctx, f.Path)
+		if err != nil {
+			return result, err
+		}
+
+		err = s.storage.DeleteByPath(ctx, f.PreviewPath)
+		if err != nil {
+			return result, err
+		}
+	}
+
+	err = s.repo.DeleteAdByUuid(ctx, tx, uuid)
+	if err != nil {
+		return result, err
+	}
+
+	result.Result = true
 
 	return result, err
 }

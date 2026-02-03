@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"vietio/internal/authctx"
 
 	"github.com/google/uuid"
 )
@@ -121,7 +122,7 @@ func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload Create
 		payload.Description,
 		payload.CategoryId,
 		payload.Price,
-		1,
+		authctx.GeUserIdFromContext(ctx),
 		1,
 		"VDN",
 		1,
@@ -170,6 +171,7 @@ func (repo *Repository) FindAdByUuid(ctx context.Context, uuid uuid.UUID) (AdMod
 			uuid,
 			title,
             description,
+			user_id,
             category_id,
             price,
             created_at
@@ -182,6 +184,7 @@ func (repo *Repository) FindAdByUuid(ctx context.Context, uuid uuid.UUID) (AdMod
 		&result.Uuid,
 		&result.Title,
 		&result.Description,
+		&result.UserId,
 		&result.CategoryId,
 		&result.Price,
 		&result.CreatedAt,
@@ -191,6 +194,24 @@ func (repo *Repository) FindAdByUuid(ctx context.Context, uuid uuid.UUID) (AdMod
 	}
 
 	return result, nil
+}
+
+func (repo *Repository) DeleteAdByUuid(ctx context.Context, tx *sql.Tx, uuid uuid.UUID) error {
+	query := `
+		DELETE FROM ads
+		WHERE uuid = $1
+	`
+	
+	_, err := tx.ExecContext(
+		ctx,
+		query,
+		uuid,
+	)
+	if err != nil {
+		return err
+	}
+	
+	return nil
 }
 
 func (r *Repository) Exists(ctx context.Context, uuid uuid.UUID) (bool, error) {
