@@ -1,11 +1,19 @@
 package authctx
 
-import "context"
+import (
+	"context"
+	"errors"
+)
 
 type contextKey string
 
 const UserIdKey contextKey = "user_id"
 
-func GeUserIdFromContext(ctx context.Context) int64 {
-    return ctx.Value(UserIdKey).(int64)
+func GeUserIdFromContext(ctx context.Context) (int64, error) {
+    userId, ok := ctx.Value(UserIdKey).(int64)
+    if !ok {
+        return 0, errors.New("user id not found in context")
+    }
+
+    return userId, nil
 }

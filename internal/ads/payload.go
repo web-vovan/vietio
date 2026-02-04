@@ -16,6 +16,7 @@ type AdsListFilterParams struct {
 	Page       int
 	Limit      int
 	CategoryId *int
+	UserId     *int64
 	Sort       string
 	Order      string
 }
@@ -75,6 +76,11 @@ type AdsListResponse struct {
 	Total int                   `json:"total"`
 	Limit int                   `json:"limit"`
 	Page  int                   `json:"page"`
+}
+
+type MyAdsListResponse struct {
+	Items []AdsListItemResponse `json:"items"`
+	Total int                   `json:"total"`
 }
 
 type CreateAdResponse struct {

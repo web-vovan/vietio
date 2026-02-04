@@ -39,6 +39,16 @@ func (h *Handler) GetAds(w http.ResponseWriter, r *http.Request) {
 	response.Json(w, result, http.StatusOK)
 }
 
+func (h *Handler) GetMyAds(w http.ResponseWriter, r *http.Request) {
+	result, err := h.service.GetMyAds(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	response.Json(w, result, http.StatusOK)
+}
+
 func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 	// Максимальный размер тела 20 MB
 	err := r.ParseMultipartForm(20 << 20)

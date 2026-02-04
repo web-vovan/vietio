@@ -105,6 +105,46 @@ func (s *Service) GetAds(ctx context.Context, params AdsListQueryParams) (AdsLis
 	}, nil
 }
 
+func (s *Service) GetMyAds(ctx context.Context) (MyAdsListResponse, error) {
+	var result MyAdsListResponse
+	userId, err := authctx.GeUserIdFromContext(ctx)
+	if err != nil {
+		return result, err
+	}
+	
+	if userId == 0 {
+		return result, errors.New("пользователь не авторизован")
+	}
+
+	filterParams := AdsListFilterParams{
+		Page:   1,
+		Sort:   "created_at",
+		UserId: &userId,
+		Order:  "desc",
+		Limit:  1000,
+	}
+	adsListRepository, _ := s.repo.FindAds(ctx, filterParams)
+
+	items := make([]AdsListItemResponse, 0, len(adsListRepository.Items))
+
+	for _, adItem := range adsListRepository.Items {
+		items = append(items, AdsListItemResponse{
+			Uuid:       adItem.Uuid,
+			Title:      adItem.Title,
+			CategoryId: adItem.CategoryId,
+			Price:      adItem.Price,
+			City:       "Нячанг",
+			Image:      s.storage.GetPublicPath(adItem.Image),
+			CreatedAt:  adItem.CreatedAt,
+		})
+	}
+
+	result.Items = items
+	result.Total = len(items)
+
+	return result, nil
+}
+
 func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, images []*multipart.FileHeader) (CreateAdResponse, error) {
 	result := CreateAdResponse{}
 
@@ -141,6 +181,11 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, ima
 func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error) {
 	var result AdResponse
 
+	userId, err := authctx.GeUserIdFromContext(ctx)
+	if err != nil {
+		return result, err
+	}
+
 	adModel, err := s.repo.FindAdByUuid(ctx, uuid)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -168,7 +213,7 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 		Price:       adModel.Price,
 		City:        "Нячанг",
 		CreatedAt:   adModel.CreatedAt,
-		IsOwner:     adModel.UserId == authctx.GeUserIdFromContext(ctx),
+		IsOwner:     adModel.UserId == userId,
 		Images:      images,
 	}, nil
 }
@@ -255,8 +300,12 @@ func (s *Service) UpdateAd(ctx context.Context, payload UpdateAdRequestBody, ima
 }
 
 func (s *Service) DeleteAd(ctx context.Context, uuid uuid.UUID) (DeleteAdResponse, error) {
-	result := DeleteAdResponse{}
-	contextUserId := authctx.GeUserIdFromContext(ctx)
+	var result DeleteAdResponse
+
+	contextUserId, err := authctx.GeUserIdFromContext(ctx)
+	if err != nil {
+		return result, err
+	}
 
 	tx, err := s.repo.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {

@@ -36,6 +36,12 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 		argsPos++
 	}
 
+	if params.UserId != nil {
+		conditions = append(conditions, fmt.Sprintf("user_id = $%d", argsPos))
+		args = append(args, *params.UserId)
+		argsPos++
+	}
+
 	where := ""
 	if len(conditions) > 0 {
 		where = "WHERE " + strings.Join(conditions, " AND ")
@@ -100,6 +106,11 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload CreateAdRequestBody) (uuid.UUID, error) {
 	var uuid uuid.UUID
 
+	userId, err := authctx.GeUserIdFromContext(ctx)
+	if err != nil {
+		return uuid, err
+	}
+
 	query := `
 		INSERT INTO ads (
 			title,
@@ -115,14 +126,14 @@ func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload Create
 		RETURNING uuid
 	`
 
-	err := tx.QueryRowContext(
+	err = tx.QueryRowContext(
 		ctx,
 		query,
 		payload.Title,
 		payload.Description,
 		payload.CategoryId,
 		payload.Price,
-		authctx.GeUserIdFromContext(ctx),
+		userId,
 		1,
 		"VDN",
 		1,

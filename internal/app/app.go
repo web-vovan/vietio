@@ -101,6 +101,10 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 
 	// роуты с авторизацией
 	router.Handle(
+		"GET /api/my",
+		authMiddleware(http.HandlerFunc(adsHandler.GetMyAds)),
+	)
+	router.Handle(
 		"GET /api/ads/{uuid}",
 		authMiddleware(http.HandlerFunc(adsHandler.GetAd)),
 	)
