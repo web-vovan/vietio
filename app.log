@@ -1,0 +1,15 @@
+2026/02/05 11:36:18 app.go:26: успешная миграция БД
+2026/02/05 11:36:35 app.go:26: успешная миграция БД
+{"time":"2026-02-05T11:51:44.510621+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-05T11:51:44.510817+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-05T11:53:26.793034+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-05T11:53:26.793239+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-05T11:53:26.793252+07:00","level":"ERROR","msg":"migration failed","err":"test error"}
+{"time":"2026-02-05T11:53:50.825607+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-05T11:53:50.825796+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-05T11:53:50.825807+07:00","level":"ERROR","msg":"migration failed","err":"test error"}
+{"time":"2026-02-05T11:54:09.663694+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-05T11:54:09.663826+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-05T11:54:09.663836+07:00","level":"ERROR","msg":"migration failed","err":"test error","user_id":123}
+{"time":"2026-02-05T12:00:48.577459+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-05T12:00:48.577671+07:00","level":"INFO","msg":"успешная миграция БД"}

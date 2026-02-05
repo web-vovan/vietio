@@ -3,8 +3,9 @@ package app
 import (
 	"context"
 	"database/sql"
-	"log"
+	"log/slog"
 	"net/http"
+	"os"
 
 	"vietio/config"
 	"vietio/internal/ads"
@@ -18,39 +19,43 @@ import (
 	"vietio/migrations"
 )
 
-func RunMigrations(dbConn *sql.DB) {
+func RunMigrations(dbConn *sql.DB, logger *slog.Logger) {
 	if err := migrations.Up(dbConn); err != nil {
-		log.Fatal("migration failed: ", err)
+		logger.Error("migration failed", "err", err)
 	}
 
-	log.Println("успешная миграция БД")
+	logger.Info("успешная миграция БД")
 }
 
-func RunSeed(dbConn *sql.DB, config *config.Config) {
+func RunSeed(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	if config.Env != "dev" {
-		log.Fatal("сиды работают только в dev окружении")
+		logger.Error("сиды работают только в dev окружении")
+		os.Exit(1)
 	}
 
 	if err := migrations.Reset(dbConn); err != nil {
-		log.Fatal("reset failed: ", err)
+		logger.Error("reset failed", "err", err)
+		os.Exit(1)
 	}
 
-	log.Println("rollback всех таблиц")
+	logger.Info("rollback всех таблиц")
 
 	if err := migrations.Up(dbConn); err != nil {
-		log.Fatal("migration failed: ", err)
+		logger.Error("migration failed", "err", err)
+		os.Exit(1)
 	}
 
-	log.Println("успешная миграция БД")
+	logger.Info("успешная миграция БД")
 
 	if err := seed.Run(dbConn); err != nil {
-		log.Fatal("seed failed: ", err)
+		logger.Error("seed failed", "err", err)
+		os.Exit(1)
 	}
 
-	log.Println("сиды успешно добавлены")
+	logger.Info("сиды успешно добавлены")
 }
 
-func RunHttpServer(dbConn *sql.DB, config *config.Config) {
+func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	adsRepository := ads.NewRepository(dbConn)
 	categoryRepository := categories.NewRepository(dbConn)
 	fileRepository := file.NewFileRepository(dbConn)
@@ -71,10 +76,12 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 			config.S3Storage.PublicUrl,
 		)
 		if err != nil {
-			panic("failed to init s3 storage: " + err.Error())
+			logger.Error("failed to init s3 storage", "err", err)
+			os.Exit(1)
 		}
 	default:
-		panic("неизвестный тип хранилища: " + config.StorageType)
+		logger.Error("неизвестный тип хранилища", "storage", config.StorageType)
+		os.Exit(1)
 	}
 
 	adsService := ads.NewService(
@@ -113,11 +120,11 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 		authMiddleware(http.HandlerFunc(adsHandler.CreateAd)),
 	)
 	router.Handle(
-		"PUT /api/ads/{uuid}", 
+		"PUT /api/ads/{uuid}",
 		authMiddleware(http.HandlerFunc(adsHandler.UpdateAd)),
 	)
 	router.Handle(
-		"DELETE /api/ads/{uuid}", 
+		"DELETE /api/ads/{uuid}",
 		authMiddleware(http.HandlerFunc(adsHandler.DeleteAd)),
 	)
 
