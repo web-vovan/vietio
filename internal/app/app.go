@@ -138,7 +138,7 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config) {
 
 	server := http.Server{
 		Addr:    ":" + config.Server.HttpPort,
-		Handler: router,
+		Handler: middleware.RecoverMiddleware(router),
 	}
 
 	server.ListenAndServe()
