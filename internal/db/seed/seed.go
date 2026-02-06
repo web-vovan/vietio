@@ -2,9 +2,14 @@ package seed
 
 import (
 	"database/sql"
+	"embed"
+	"vietio/internal/ads"
 )
 
-func Run(dbConn *sql.DB) error {
+//go:embed images/*
+var imagesFS embed.FS
+
+func Run(dbConn *sql.DB, fileStorage ads.FileStorage) error {
     if err := runCategoriesSeed(dbConn); err != nil {
         return err
     }
@@ -21,7 +26,7 @@ func Run(dbConn *sql.DB) error {
         return err
     }
 
-    if err := runFilesSeed(dbConn); err != nil {
+    if err := runFilesSeed(dbConn, fileStorage, imagesFS); err != nil {
         return err
     }
 

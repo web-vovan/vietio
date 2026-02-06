@@ -2,3 +2,4 @@
 .vscode
 uploads
 .DS_Store
+app.log

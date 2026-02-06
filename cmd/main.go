@@ -33,9 +33,10 @@ func main() {
 
     if config.SeedFlag {
         app.RunSeed(dbConn, config, logger)
-    } else {
-        app.RunMigrations(dbConn, logger)
+		return
     }
+        
+	app.RunMigrations(dbConn, logger)
 
     app.RunHttpServer(dbConn, config, logger)
 }

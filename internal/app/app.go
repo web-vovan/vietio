@@ -33,6 +33,11 @@ func RunSeed(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 		os.Exit(1)
 	}
 
+	fileStorage, err := getFileStorage(config, logger)
+	if err != nil {
+		os.Exit(1)
+	}
+
 	if err := migrations.Reset(dbConn); err != nil {
 		logger.Error("reset failed", "err", err)
 		os.Exit(1)
@@ -47,7 +52,7 @@ func RunSeed(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 
 	logger.Info("успешная миграция БД")
 
-	if err := seed.Run(dbConn); err != nil {
+	if err := seed.Run(dbConn, fileStorage); err != nil {
 		logger.Error("seed failed", "err", err)
 		os.Exit(1)
 	}
@@ -61,26 +66,8 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	fileRepository := file.NewFileRepository(dbConn)
 	adValidator := ads.NewValidator(categoryRepository, adsRepository)
 
-	var fileStorage ads.FileStorage
-	var err error
-
-	switch config.StorageType {
-	case "local":
-		fileStorage = storage.NewLocalStorage(config.Server.PublicUrl, "./uploads")
-	case "s3":
-		fileStorage, err = storage.NewS3Storage(
-			context.Background(),
-			config.S3Storage.Key,
-			config.S3Storage.Secret,
-			config.S3Storage.Bucket,
-			config.S3Storage.PublicUrl,
-		)
-		if err != nil {
-			logger.Error("failed to init s3 storage", "err", err)
-			os.Exit(1)
-		}
-	default:
-		logger.Error("неизвестный тип хранилища", "storage", config.StorageType)
+	fileStorage, err := getFileStorage(config, logger)
+	if err != nil {
 		os.Exit(1)
 	}
 
@@ -149,4 +136,31 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	}
 
 	server.ListenAndServe()
+}
+
+func getFileStorage(config *config.Config, logger *slog.Logger) (ads.FileStorage, error) {
+	var fileStorage ads.FileStorage
+	var err error
+
+	switch config.StorageType {
+	case "local":
+		fileStorage = storage.NewLocalStorage(config.Server.PublicUrl, "./uploads")
+	case "s3":
+		fileStorage, err = storage.NewS3Storage(
+			context.Background(),
+			config.S3Storage.Key,
+			config.S3Storage.Secret,
+			config.S3Storage.Bucket,
+			config.S3Storage.PublicUrl,
+		)
+		if err != nil {
+			logger.Error("failed to init s3 storage", "err", err)
+			return nil, err
+		}
+	default:
+		logger.Error("неизвестный тип хранилища", "storage", config.StorageType)
+		return nil, err
+	}
+
+	return fileStorage, nil
 }
