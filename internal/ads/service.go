@@ -81,7 +81,10 @@ func (s *Service) GetAds(ctx context.Context, params AdsListQueryParams) (AdsLis
 		Limit:      20,
 	}
 
-	adsListRepository, _ := s.repo.FindAds(ctx, filterParams)
+	adsListRepository, err := s.repo.FindAds(ctx, filterParams)
+	if err != nil {
+		return AdsListResponse{}, err
+	}
 
 	items := make([]AdsListItemResponse, 0, len(adsListRepository.Items))
 

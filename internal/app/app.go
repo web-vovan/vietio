@@ -77,7 +77,7 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 		fileStorage,
 		adValidator,
 	)
-	adsHandler := ads.NewHandler(adsService)
+	adsHandler := ads.NewHandler(adsService, logger)
 
 	authValidator := auth.NewValidator()
 	userRepository := user.NewRepository(dbConn)
@@ -132,7 +132,7 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 
 	server := http.Server{
 		Addr:    ":" + config.Server.HttpPort,
-		Handler: middleware.RecoverMiddleware(router),
+		Handler: middleware.RecoverMiddleware(logger, router),
 	}
 
 	server.ListenAndServe()

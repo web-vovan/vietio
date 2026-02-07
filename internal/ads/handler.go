@@ -2,6 +2,7 @@ package ads
 
 import (
 	"errors"
+	"log/slog"
 	"net/http"
 
 	appErrors "vietio/internal/errors"
@@ -13,11 +14,13 @@ import (
 
 type Handler struct {
 	service *Service
+	logger *slog.Logger
 }
 
-func NewHandler(service *Service) *Handler {
+func NewHandler(service *Service, logger *slog.Logger) *Handler {
 	return &Handler{
 		service: service,
+		logger: logger,
 	}
 }
 
@@ -32,7 +35,8 @@ func (h *Handler) GetAds(w http.ResponseWriter, r *http.Request) {
 
 	result, err := h.service.GetAds(r.Context(), params)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.logger.Error(ERROR_FETCH_ADS, "err", err)
+		http.Error(w, ERROR_FETCH_ADS, http.StatusInternalServerError)
 		return
 	}
 

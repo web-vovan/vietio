@@ -215,3 +215,24 @@
 {"time":"2026-02-06T22:35:33.055447+07:00","level":"INFO","msg":"сиды успешно добавлены"}
 {"time":"2026-02-06T22:35:49.41923+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
 {"time":"2026-02-06T22:35:49.419405+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-06T22:39:50.772211+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-06T22:39:50.772253+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-07T10:42:00.662593+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-07T10:42:00.663868+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-07T11:40:36.800464+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-07T11:40:36.800659+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-07T12:37:59.507219+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-07T12:37:59.507597+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-07T12:38:12.441501+07:00","level":"ERROR","msg":"ошибка при загрузке списка объявлений","err":"ERROR: column \"category_вid\" does not exist (SQLSTATE 42703)"}
+{"time":"2026-02-07T12:39:53.569774+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-07T12:39:53.569987+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-07T12:43:05.552685+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-07T12:43:05.552997+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-07T12:44:35.380114+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-07T12:44:35.380335+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-07T12:44:40.833737+07:00","level":"INFO","msg":"panic: test panic"}
+{"time":"2026-02-07T12:51:24.564062+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-07T12:51:24.564445+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-07T12:51:28.218839+07:00","level":"ERROR","msg":"panic recovered","error":"test panic","stack":"goroutine 11 [running]:\nruntime/debug.Stack()\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/runtime/debug/stack.go:26 +0x64\nvietio/internal/app.RunHttpServer.RecoverMiddleware.func8.1()\n\t/Users/vladimir/brainstorm/vietio/internal/middleware/recover.go:15 +0x88\npanic({0x104d51840?, 0x104f00160?})\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/runtime/panic.go:783 +0x120\nvietio/internal/ads.(*Repository).FindAds(...)\n\t/Users/vladimir/brainstorm/vietio/internal/ads/repository.go:33\nvietio/internal/ads.(*Service).GetAds(0x140002e7740, {0x1?, 0x1049de92b?}, {0x10408eafc?, 0x140002fe6a8?, {0x1400030c2e7?, 0x14000091948?}})\n\t/Users/vladimir/brainstorm/vietio/internal/ads/service.go:84 +0x78\nvietio/internal/ads.(*Handler).GetAds(0x1400003fef0, {0x104f145f8, 0x140000c7680}, 0x140002c2c80)\n\t/Users/vladimir/brainstorm/vietio/internal/ads/handler.go:36 +0x154\nnet/http.HandlerFunc.ServeHTTP(0x14000270cc0?, {0x104f145f8?, 0x140000c7680?}, 0x0?)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2322 +0x38\nnet/http.(*ServeMux).ServeHTTP(0x14000083008?, {0x104f145f8, 0x140000c7680}, 0x140002c2c80)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2861 +0x190\nvietio/internal/app.RunHttpServer.RecoverMiddleware.func8({0x104f145f8?, 0x140000c7680?}, 0x140000806d0?)\n\t/Users/vladimir/brainstorm/vietio/internal/middleware/recover.go:23 +0x6c\nnet/http.HandlerFunc.ServeHTTP(0x140002b15a0?, {0x104f145f8?, 0x140000c7680?}, 0x14000091b50?)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2322 +0x38\nnet/http.serverHandler.ServeHTTP({0x140002a9200?}, {0x104f145f8?, 0x140000c7680?}, 0x6?)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:3340 +0xb0\nnet/http.(*conn).serve(0x14000261830, {0x104f16008, 0x140002e7b30})\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2109 +0x528\ncreated by net/http.(*Server).Serve in goroutine 1\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:3493 +0x384\n","method":"GET","path":"/api/ads"}
+{"time":"2026-02-07T12:52:26.71913+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-07T12:52:26.719359+07:00","level":"INFO","msg":"успешная миграция БД"}
