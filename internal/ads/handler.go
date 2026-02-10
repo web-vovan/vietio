@@ -14,13 +14,13 @@ import (
 
 type Handler struct {
 	service *Service
-	logger *slog.Logger
+	logger  *slog.Logger
 }
 
 func NewHandler(service *Service, logger *slog.Logger) *Handler {
 	return &Handler{
 		service: service,
-		logger: logger,
+		logger:  logger,
 	}
 }
 
@@ -35,8 +35,8 @@ func (h *Handler) GetAds(w http.ResponseWriter, r *http.Request) {
 
 	result, err := h.service.GetAds(r.Context(), params)
 	if err != nil {
-		h.logger.Error(ERROR_FETCH_ADS, "err", err)
-		http.Error(w, ERROR_FETCH_ADS, http.StatusInternalServerError)
+		h.logger.Error(ErrAdsList.Error(), "err", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -88,13 +88,19 @@ func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetAd(w http.ResponseWriter, r *http.Request) {
 	uuid, err := uuid.Parse(r.PathValue("uuid"))
 	if err != nil {
-		http.Error(w, "невалидный uuid в запросе", http.StatusInternalServerError)
+		http.Error(w, "невалидный uuid в запросе", http.StatusBadRequest)
 		return
 	}
 
 	result, err := h.service.GetAd(r.Context(), uuid)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		switch {
+		case errors.Is(err, ErrAdNotFound):
+			http.Error(w, ErrAdNotFound.Error(), http.StatusNotFound)
+		default:
+			h.logger.Error(ErrAd.Error(), "err", err, "uuid", uuid)
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+		}
 		return
 	}
 

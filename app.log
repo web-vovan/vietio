@@ -248,3 +248,28 @@
 {"time":"2026-02-10T10:44:24.173045+07:00","level":"INFO","msg":"успешная миграция БД"}
 {"time":"2026-02-10T11:06:38.319233+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
 {"time":"2026-02-10T11:06:38.319402+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-10T11:11:06.651129+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-10T11:11:06.651336+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-10T11:14:46.810487+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-10T11:14:46.810891+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-10T11:14:51.724419+07:00","level":"ERROR","msg":"ошибка при загрузке объявления","err":"sql: no rows in result set"}
+{"time":"2026-02-10T11:15:02.342435+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-10T11:15:02.342572+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-10T11:15:04.416529+07:00","level":"ERROR","msg":"ошибка при загрузке объявления","err":"sql: no rows in result set"}
+{"time":"2026-02-10T11:18:06.743847+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-10T11:18:06.744096+07:00","level":"INFO","source":{"function":"vietio/internal/app.RunMigrations","file":"/Users/vladimir/brainstorm/vietio/internal/app/app.go","line":27},"msg":"успешная миграция БД"}
+{"time":"2026-02-10T11:20:19.312509+07:00","level":"ERROR","source":{"function":"vietio/internal/ads.(*Handler).GetAd","file":"/Users/vladimir/brainstorm/vietio/internal/ads/handler.go","line":97},"msg":"ошибка при загрузке объявления","err":"sql: no rows in result set"}
+{"time":"2026-02-10T11:25:47.292948+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-10T11:25:47.293357+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-10T11:25:49.200822+07:00","level":"ERROR","msg":"ошибка при загрузке объявления","err":"не удалось найти объявление 019c0d22-c66d-7c91-aa2a-8035b52b2e07"}
+{"time":"2026-02-10T11:29:27.320135+07:00","level":"ERROR","msg":"ошибка при загрузке объявления","err":"не удалось найти объявление 019c3398-005c-7b83-90b3-c1f77d000301"}
+{"time":"2026-02-10T11:50:42.641546+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-10T11:50:42.641768+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-10T11:54:47.068082+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-10T11:54:47.068245+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-10T11:54:49.798305+07:00","level":"ERROR","msg":"ошибка при загрузке объявления","err":"ad user not found"}
+{"time":"2026-02-10T11:56:39.855995+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-10T11:56:39.856359+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-10T11:56:42.268524+07:00","level":"ERROR","msg":"ad error","err":"ad user not found","uuid":"019c3398-005c-7b83-90b3-c1f77d000302"}
+{"time":"2026-02-10T11:58:49.009457+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-10T11:58:49.009658+07:00","level":"INFO","msg":"успешная миграция БД"}
