@@ -64,6 +64,7 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	adsRepository := ads.NewRepository(dbConn)
 	categoryRepository := categories.NewRepository(dbConn)
 	fileRepository := file.NewFileRepository(dbConn)
+	userRepository := user.NewRepository(dbConn)
 	adValidator := ads.NewValidator(categoryRepository, adsRepository)
 
 	fileStorage, err := getFileStorage(config, logger)
@@ -74,13 +75,13 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	adsService := ads.NewService(
 		adsRepository,
 		fileRepository,
+		userRepository,
 		fileStorage,
 		adValidator,
 	)
 	adsHandler := ads.NewHandler(adsService, logger)
 
 	authValidator := auth.NewValidator()
-	userRepository := user.NewRepository(dbConn)
 	authService := auth.NewService(config, authValidator, userRepository)
 	authHandler := auth.NewHandler(authService)
 

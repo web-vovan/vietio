@@ -12,6 +12,7 @@ import (
 
 	"vietio/internal/authctx"
 	fileApp "vietio/internal/file"
+	"vietio/internal/user"
 
 	"github.com/google/uuid"
 )
@@ -24,6 +25,7 @@ var allowedSort = map[string]string{
 type Service struct {
 	repo      *Repository
 	fileRepo  FileRepository
+	userRepo  UserRepository
 	storage   FileStorage
 	validator *Validator
 }
@@ -34,15 +36,21 @@ type FileRepository interface {
 	FindFilesByAdUuid(context.Context, uuid.UUID) ([]fileApp.FileModel, error)
 }
 
+type UserRepository interface {
+	GetUserById(context.Context, int64) (user.UserModel, error)
+}
+
 func NewService(
 	repo *Repository,
 	fileRepository FileRepository,
+	userRepository UserRepository,
 	storage FileStorage,
 	validator *Validator,
 ) *Service {
 	return &Service{
 		repo:      repo,
 		fileRepo:  fileRepository,
+		userRepo:  userRepository,
 		storage:   storage,
 		validator: validator,
 	}
@@ -114,7 +122,7 @@ func (s *Service) GetMyAds(ctx context.Context) (MyAdsListResponse, error) {
 	if err != nil {
 		return result, err
 	}
-	
+
 	if userId == 0 {
 		return result, errors.New("пользователь не авторизован")
 	}
@@ -184,7 +192,7 @@ func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, ima
 func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error) {
 	var result AdResponse
 
-	userId, err := authctx.GeUserIdFromContext(ctx)
+	ctxUserId, err := authctx.GeUserIdFromContext(ctx)
 	if err != nil {
 		return result, err
 	}
@@ -202,6 +210,11 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 		return result, err
 	}
 
+	adOwner, err := s.userRepo.GetUserById(ctx, adModel.UserId)
+	if err != nil {
+		return result, err
+	}
+
 	var images = make([]string, 0, len(adFiles))
 	for _, file := range adFiles {
 		publicPath := s.storage.GetPublicPath(file.Path)
@@ -209,15 +222,16 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 	}
 
 	return AdResponse{
-		Uuid:        adModel.Uuid,
-		Title:       adModel.Title,
-		Description: adModel.Description,
-		CategoryId:  adModel.CategoryId,
-		Price:       adModel.Price,
-		City:        "Нячанг",
-		CreatedAt:   adModel.CreatedAt,
-		IsOwner:     adModel.UserId == userId,
-		Images:      images,
+		Uuid:          adModel.Uuid,
+		Title:         adModel.Title,
+		Description:   adModel.Description,
+		CategoryId:    adModel.CategoryId,
+		Price:         adModel.Price,
+		City:          "Нячанг",
+		CreatedAt:     adModel.CreatedAt,
+		IsOwner:       adModel.UserId == ctxUserId,
+		OwnerUsername: adOwner.Username,
+		Images:        images,
 	}, nil
 }
 

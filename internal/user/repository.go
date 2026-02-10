@@ -47,6 +47,37 @@ func (r *Repository) GetUserByTelegramId(ctx context.Context, telegramId int64) 
     return user, nil
 }
 
+func (r *Repository) GetUserById(ctx context.Context, id int64) (UserModel, error) {
+    var user UserModel
+
+    query := `
+        SELECT
+            id,
+            telegram_id,
+            username
+        FROM
+            users
+        WHERE
+            id = $1
+        LIMIT 1
+    `
+
+    err := r.db.QueryRowContext(ctx, query, id).Scan(
+        &user.Id,
+        &user.TelegramId,
+        &user.Username,
+    )
+
+    if err != nil {
+        if errors.Is(err, sql.ErrNoRows) {
+            return user, sql.ErrNoRows
+        }
+        return user, err
+    }
+
+    return user, nil
+}
+
 func (r *Repository) UpdateUsername(ctx context.Context, user UserModel) error {
     query := `
         UPDATE 
