@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"strconv"
 
 	appErrors "vietio/internal/errors"
 	"vietio/internal/response"
@@ -35,7 +36,7 @@ func (h *Handler) GetAds(w http.ResponseWriter, r *http.Request) {
 
 	result, err := h.service.GetAds(r.Context(), params)
 	if err != nil {
-		h.logger.Error(ErrAdsList.Error(), "err", err)
+		h.logger.Error(appErrors.ErrAdsList.Error(), "err", err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
@@ -61,11 +62,29 @@ func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	validationErrors := appErrors.NewValidationError()
+
+	price, err := strconv.Atoi(r.FormValue("price"));
+	if err != nil {
+        validationErrors.Add("price", "в поле должны быть число")
+    }
+
+	categoryId, err := strconv.Atoi(r.FormValue("category_id"));
+	if err != nil {
+        validationErrors.Add("category_id", "в поле должны быть число")
+    }
+
+	if validationErrors.HasErrors() {
+		h.logger.Warn(appErrors.ErrCreateAdValidation.Error(), "err", err)
+		response.Json(w, validationErrors, http.StatusBadRequest)
+		return
+	}
+
 	payload := CreateAdRequestBody{
 		Title:       r.FormValue("title"),
 		Description: r.FormValue("description"),
-		Price:       utils.ParseInt(r.FormValue("price"), 0),
-		CategoryId:  utils.ParseInt(r.FormValue("category_id"), 0),
+		Price:       price,
+		CategoryId:  categoryId,
 	}
 
 	images := r.MultipartForm.File["images"]
@@ -75,9 +94,11 @@ func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		var validationError *appErrors.ValidationError
 		if errors.As(err, &validationError) {
+			h.logger.Warn(appErrors.ErrCreateAdValidation.Error(), "err", err, "payload", payload)
 			response.Json(w, err, http.StatusBadRequest)
 		} else {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			h.logger.Error(appErrors.ErrCreateAd.Error(), "err", err, "payload", payload)
+			http.Error(w, "internal server", http.StatusInternalServerError)
 		}
 		return
 	}
@@ -95,10 +116,10 @@ func (h *Handler) GetAd(w http.ResponseWriter, r *http.Request) {
 	result, err := h.service.GetAd(r.Context(), uuid)
 	if err != nil {
 		switch {
-		case errors.Is(err, ErrAdNotFound):
-			http.Error(w, ErrAdNotFound.Error(), http.StatusNotFound)
+		case errors.Is(err, appErrors.ErrAdNotFound):
+			http.Error(w, appErrors.ErrAdNotFound.Error(), http.StatusNotFound)
 		default:
-			h.logger.Error(ErrAd.Error(), "err", err, "uuid", uuid)
+			h.logger.Error(appErrors.ErrAd.Error(), "err", err, "uuid", uuid)
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 		}
 		return
@@ -121,12 +142,30 @@ func (h *Handler) UpdateAd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	validationErrors := appErrors.NewValidationError()
+
+	price, err := strconv.Atoi(r.FormValue("price"));
+	if err != nil {
+        validationErrors.Add("price", "в поле должны быть число")
+    }
+
+	categoryId, err := strconv.Atoi(r.FormValue("category_id"));
+	if err != nil {
+        validationErrors.Add("category_id", "в поле должны быть число")
+    }
+
+	if validationErrors.HasErrors() {
+		h.logger.Warn(appErrors.ErrCreateAdValidation.Error(), "err", err)
+		response.Json(w, validationErrors, http.StatusBadRequest)
+		return
+	}
+
 	payload := UpdateAdRequestBody{
 		Uuid:        uuid,
 		Title:       r.FormValue("title"),
 		Description: r.FormValue("description"),
-		Price:       utils.ParseInt(r.FormValue("price"), 0),
-		CategoryId:  utils.ParseInt(r.FormValue("category_id"), 0),
+		Price:       price,
+		CategoryId:  categoryId,
 		OldImages:   r.Form["old_images"],
 	}
 
@@ -137,9 +176,11 @@ func (h *Handler) UpdateAd(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		var validationError *appErrors.ValidationError
 		if errors.As(err, &validationError) {
+			h.logger.Warn(appErrors.ErrUpdateAdValidation.Error(), "err", err, "payload", payload)
 			response.Json(w, err, http.StatusBadRequest)
 		} else {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			h.logger.Error(appErrors.ErrUpdateAd.Error(), "err", err, "payload", payload)
+			http.Error(w, "internal server", http.StatusInternalServerError)
 		}
 		return
 	}

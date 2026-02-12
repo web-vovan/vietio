@@ -1,6 +1,19 @@
 package errors
 
-import "strings"
+import (
+	"errors"
+	"strings"
+)
+
+var ErrAdsList = errors.New("ads list error")
+var ErrAd = errors.New("ad error")
+var ErrCreateAd = errors.New("ad create error")
+var ErrUpdateAd = errors.New("ad update error")
+var ErrCreateAdValidation = errors.New("ad create error validation")
+var ErrUpdateAdValidation = errors.New("ad update error validation")
+
+var ErrAdNotFound = errors.New("ad not found")
+var ErrAdUserNotFound = errors.New("ad user not found")
 
 type ValidationError struct {
 	Errors []ValidationErrorItem `json:"errors"`

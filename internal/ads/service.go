@@ -13,6 +13,7 @@ import (
 	"vietio/internal/authctx"
 	fileApp "vietio/internal/file"
 	"vietio/internal/user"
+	appErrors "vietio/internal/errors"
 
 	"github.com/google/uuid"
 )
@@ -200,7 +201,7 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 	adModel, err := s.repo.FindAdByUuid(ctx, uuid)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return result, ErrAdNotFound
+			return result, appErrors.ErrAdNotFound
 		}
 		return result, err
 	}
@@ -213,7 +214,7 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 	adOwner, err := s.userRepo.GetUserById(ctx, adModel.UserId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return result, ErrAdUserNotFound
+			return result, appErrors.ErrAdUserNotFound
 		}
 		return result, err
 	}
