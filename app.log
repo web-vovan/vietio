@@ -311,3 +311,22 @@
 {"time":"2026-02-12T11:42:39.546271+07:00","level":"WARN","msg":"ad create error validation","err":";price не может быть отрицательным","payload":{"title":"new cool ad","description":"desc new cool ad","price":-234,"category_id":2}}
 {"time":"2026-02-12T11:42:49.839994+07:00","level":"WARN","msg":"ad create error validation","err":"strconv.Atoi: parsing \"2eq\": invalid syntax"}
 {"time":"2026-02-12T11:43:04.782966+07:00","level":"WARN","msg":"ad create error validation","err":"strconv.Atoi: parsing \"2eq\": invalid syntax"}
+{"time":"2026-02-13T11:55:15.816761+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-13T11:55:15.817283+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-13T11:56:50.009925+07:00","level":"WARN","msg":"ad create error validation","err":null}
+{"time":"2026-02-13T11:58:34.713511+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-13T11:58:34.713701+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-13T12:01:46.713207+07:00","level":"WARN","msg":"ad create error validation","err":";price не может быть отрицательным","payload":{"title":"new cool ad","description":"desc new cool ad","price":-123,"category_id":2}}
+{"time":"2026-02-13T12:09:36.630641+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-13T12:09:36.630852+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-13T12:09:49.853303+07:00","level":"INFO","msg":"http: superfluous response.WriteHeader call from vietio/internal/response.Json (response.go:10)"}
+{"time":"2026-02-13T12:09:56.975747+07:00","level":"INFO","msg":"http: superfluous response.WriteHeader call from vietio/internal/response.Json (response.go:10)"}
+{"time":"2026-02-13T12:10:05.313245+07:00","level":"INFO","msg":"http: superfluous response.WriteHeader call from vietio/internal/response.Json (response.go:10)"}
+{"time":"2026-02-13T12:11:02.74112+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-13T12:11:02.741323+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-13T12:11:49.951717+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-13T12:11:49.952082+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-13T12:15:40.575588+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-13T12:15:40.575745+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-13T12:23:28.114303+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-13T12:23:28.115287+07:00","level":"INFO","msg":"успешная миграция БД"}

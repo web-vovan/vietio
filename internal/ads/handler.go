@@ -64,7 +64,14 @@ func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 
 	validationErrors := appErrors.NewValidationError()
 
-	price, err := strconv.Atoi(r.FormValue("price"));
+	var rawPrice string
+	if r.FormValue("price") == "" {
+		rawPrice = "0"
+	} else {
+		rawPrice = r.FormValue("price")
+	}
+
+	price, err := strconv.Atoi(rawPrice);
 	if err != nil {
         validationErrors.Add("price", "в поле должны быть число")
     }
@@ -92,8 +99,8 @@ func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 	result, err := h.service.CreateAd(r.Context(), payload, images)
 
 	if err != nil {
-		var validationError *appErrors.ValidationError
-		if errors.As(err, &validationError) {
+		var vError *appErrors.ValidationError
+		if errors.As(err, &vError) {
 			h.logger.Warn(appErrors.ErrCreateAdValidation.Error(), "err", err, "payload", payload)
 			response.Json(w, err, http.StatusBadRequest)
 		} else {
