@@ -3,6 +3,7 @@ package ads
 import (
 	"context"
 	"mime/multipart"
+	"strconv"
 	appErrors "vietio/internal/errors"
 
 	"github.com/google/uuid"
@@ -114,4 +115,29 @@ func (v *Validator) validateCommonFields(
 			errors.Add("category_id", "category_id такой категории не существует")
 		}
 	}
+}
+
+func validateIntField(
+	fieldName string,
+	fieldValue string, 
+	isRequired bool, 
+	defaultValue int, 
+	errors *appErrors.ValidationError,
+) int {
+	if isRequired && fieldValue == "" {
+		errors.Add(fieldName, "поле обязательно для заполнения")
+		return 0
+	}
+
+	if !isRequired && fieldValue == "" {
+		return defaultValue
+	}
+
+	result, err := strconv.Atoi(fieldValue);
+	if err != nil {
+        errors.Add(fieldName, "в поле должны быть число")
+		return 0
+    }
+
+	return result
 }

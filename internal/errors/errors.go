@@ -11,6 +11,7 @@ var ErrCreateAd = errors.New("ad create error")
 var ErrUpdateAd = errors.New("ad update error")
 var ErrCreateAdValidation = errors.New("ad create error validation")
 var ErrUpdateAdValidation = errors.New("ad update error validation")
+var ErrForbidden = errors.New("forbidden")
 
 var ErrAdNotFound = errors.New("ad not found")
 var ErrAdUserNotFound = errors.New("ad user not found")

@@ -330,3 +330,24 @@
 {"time":"2026-02-13T12:15:40.575745+07:00","level":"INFO","msg":"успешная миграция БД"}
 {"time":"2026-02-13T12:23:28.114303+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
 {"time":"2026-02-13T12:23:28.115287+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T11:53:38.647754+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T11:53:38.649305+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T11:54:05.003312+07:00","level":"WARN","msg":"ad create error validation","err":";price не может быть отрицательным","payload":{"title":"new cool ad","description":"desc new cool ad","price":-123,"category_id":2}}
+{"time":"2026-02-14T11:54:11.551085+07:00","level":"WARN","msg":"ad create error validation","err":null}
+{"time":"2026-02-14T11:54:24.186524+07:00","level":"WARN","msg":"ad create error validation","err":null}
+{"time":"2026-02-14T11:54:28.597212+07:00","level":"WARN","msg":"ad create error validation","err":null}
+{"time":"2026-02-14T11:54:35.298858+07:00","level":"WARN","msg":"ad create error validation","err":";category_id должен быть >= 1","payload":{"title":"new cool ad","description":"desc new cool ad","price":0,"category_id":-3}}
+{"time":"2026-02-14T12:11:12.867752+07:00","level":"WARN","msg":"ad update error validation","err":";такого объявления не существует не существует","payload":{"Uuid":"019bfdcd-1065-718b-b699-e56bcff851aa","title":"new cool ad","description":"desc new cool ad","price":1000000,"category_id":2,"old_images":["httt://ya.ru","http://mail.ru"]}}
+{"time":"2026-02-14T12:13:29.712958+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T12:13:29.713164+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T12:13:34.731988+07:00","level":"WARN","msg":"forbidden","err":"forbidden","payload":{"Uuid":"019c3398-006d-7a3c-8ccc-4010765e0970","title":"new cool ad3","description":"desc new cool ad","price":1000000,"category_id":2,"old_images":["httt://ya.ru","http://mail.ru"]}}
+{"time":"2026-02-14T12:14:08.999916+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T12:14:09.000161+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T12:14:10.646761+07:00","level":"WARN","msg":"forbidden","err":"forbidden","payload":{"Uuid":"019c3398-006d-7a3c-8ccc-4010765e0970","title":"new cool ad3","description":"desc new cool ad","price":1000000,"category_id":2,"old_images":["httt://ya.ru","http://mail.ru"]}}
+{"time":"2026-02-14T12:14:22.741798+07:00","level":"WARN","msg":"forbidden","err":"forbidden","payload":{"Uuid":"019c3398-006d-7a3c-8ccc-4010765e0970","title":"new cool ad3","description":"desc new cool ad","price":1000000,"category_id":2,"old_images":["httt://ya.ru","http://mail.ru"]}}
+{"time":"2026-02-14T12:14:47.636489+07:00","level":"WARN","msg":"ad create error validation","err":null}
+{"time":"2026-02-14T12:14:52.852676+07:00","level":"WARN","msg":"ad update error validation","err":";price не может быть отрицательным","payload":{"Uuid":"019c3398-006d-7a3c-8ccc-4010765e0970","title":"new cool ad3","description":"desc new cool ad","price":-1,"category_id":2,"old_images":["httt://ya.ru","http://mail.ru"]}}
+{"time":"2026-02-14T12:14:59.222127+07:00","level":"WARN","msg":"ad create error validation","err":null}
+{"time":"2026-02-14T12:15:05.125925+07:00","level":"WARN","msg":"ad update error validation","err":";category_id должен быть >= 1","payload":{"Uuid":"019c3398-006d-7a3c-8ccc-4010765e0970","title":"new cool ad3","description":"desc new cool ad","price":0,"category_id":0,"old_images":["httt://ya.ru","http://mail.ru"]}}
+{"time":"2026-02-14T12:15:38.823194+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T12:15:38.823399+07:00","level":"INFO","msg":"успешная миграция БД"}

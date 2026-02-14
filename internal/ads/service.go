@@ -242,6 +242,11 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 func (s *Service) UpdateAd(ctx context.Context, payload UpdateAdRequestBody, images []*multipart.FileHeader) (UpdateAdResponse, error) {
 	result := UpdateAdResponse{}
 
+	contextUserId, err := authctx.GeUserIdFromContext(ctx)
+	if err != nil {
+		return result, err
+	}
+
 	validationErrors := s.validator.updateAdValidate(ctx, payload, images)
 	if validationErrors.HasErrors() {
 		return result, validationErrors
@@ -256,6 +261,10 @@ func (s *Service) UpdateAd(ctx context.Context, payload UpdateAdRequestBody, ima
 	ad, err := s.repo.FindAdByUuid(ctx, payload.Uuid)
 	if err != nil {
 		return result, err
+	}
+
+	if ad.UserId != contextUserId {
+		return result, appErrors.ErrForbidden
 	}
 
 	ad.Title = payload.Title
@@ -340,7 +349,7 @@ func (s *Service) DeleteAd(ctx context.Context, uuid uuid.UUID) (DeleteAdRespons
 	}
 
 	if ad.UserId != contextUserId {
-		return result, errors.New("нет прав")
+		return result, appErrors.ErrForbidden
 	}
 
 	files, err := s.fileRepo.FindFilesByAdUuid(ctx, uuid)

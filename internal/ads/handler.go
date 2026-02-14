@@ -4,7 +4,6 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
-	"strconv"
 
 	appErrors "vietio/internal/errors"
 	"vietio/internal/response"
@@ -44,6 +43,28 @@ func (h *Handler) GetAds(w http.ResponseWriter, r *http.Request) {
 	response.Json(w, result, http.StatusOK)
 }
 
+func (h *Handler) GetAd(w http.ResponseWriter, r *http.Request) {
+	uuid, err := uuid.Parse(r.PathValue("uuid"))
+	if err != nil {
+		http.Error(w, "невалидный uuid в запросе", http.StatusBadRequest)
+		return
+	}
+
+	result, err := h.service.GetAd(r.Context(), uuid)
+	if err != nil {
+		switch {
+		case errors.Is(err, appErrors.ErrAdNotFound):
+			http.Error(w, appErrors.ErrAdNotFound.Error(), http.StatusNotFound)
+		default:
+			h.logger.Error(appErrors.ErrAd.Error(), "err", err, "uuid", uuid)
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	response.Json(w, result, http.StatusOK)
+}
+
 func (h *Handler) GetMyAds(w http.ResponseWriter, r *http.Request) {
 	result, err := h.service.GetMyAds(r.Context())
 	if err != nil {
@@ -64,22 +85,8 @@ func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 
 	validationErrors := appErrors.NewValidationError()
 
-	var rawPrice string
-	if r.FormValue("price") == "" {
-		rawPrice = "0"
-	} else {
-		rawPrice = r.FormValue("price")
-	}
-
-	price, err := strconv.Atoi(rawPrice);
-	if err != nil {
-        validationErrors.Add("price", "в поле должны быть число")
-    }
-
-	categoryId, err := strconv.Atoi(r.FormValue("category_id"));
-	if err != nil {
-        validationErrors.Add("category_id", "в поле должны быть число")
-    }
+	price := validateIntField("price", r.FormValue("price"), false, 0, validationErrors)
+	categoryId := validateIntField("category_id", r.FormValue("category_id"), true, 0, validationErrors)
 
 	if validationErrors.HasErrors() {
 		h.logger.Warn(appErrors.ErrCreateAdValidation.Error(), "err", err)
@@ -113,28 +120,6 @@ func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 	response.Json(w, result, http.StatusOK)
 }
 
-func (h *Handler) GetAd(w http.ResponseWriter, r *http.Request) {
-	uuid, err := uuid.Parse(r.PathValue("uuid"))
-	if err != nil {
-		http.Error(w, "невалидный uuid в запросе", http.StatusBadRequest)
-		return
-	}
-
-	result, err := h.service.GetAd(r.Context(), uuid)
-	if err != nil {
-		switch {
-		case errors.Is(err, appErrors.ErrAdNotFound):
-			http.Error(w, appErrors.ErrAdNotFound.Error(), http.StatusNotFound)
-		default:
-			h.logger.Error(appErrors.ErrAd.Error(), "err", err, "uuid", uuid)
-			http.Error(w, "internal server error", http.StatusInternalServerError)
-		}
-		return
-	}
-
-	response.Json(w, result, http.StatusOK)
-}
-
 func (h *Handler) UpdateAd(w http.ResponseWriter, r *http.Request) {
 	uuid, err := uuid.Parse(r.PathValue("uuid"))
 	if err != nil {
@@ -151,15 +136,8 @@ func (h *Handler) UpdateAd(w http.ResponseWriter, r *http.Request) {
 
 	validationErrors := appErrors.NewValidationError()
 
-	price, err := strconv.Atoi(r.FormValue("price"));
-	if err != nil {
-        validationErrors.Add("price", "в поле должны быть число")
-    }
-
-	categoryId, err := strconv.Atoi(r.FormValue("category_id"));
-	if err != nil {
-        validationErrors.Add("category_id", "в поле должны быть число")
-    }
+	price := validateIntField("price", r.FormValue("price"), false, 0, validationErrors)
+	categoryId := validateIntField("category_id", r.FormValue("category_id"), true, 0, validationErrors)
 
 	if validationErrors.HasErrors() {
 		h.logger.Warn(appErrors.ErrCreateAdValidation.Error(), "err", err)
@@ -181,16 +159,21 @@ func (h *Handler) UpdateAd(w http.ResponseWriter, r *http.Request) {
 	result, err := h.service.UpdateAd(r.Context(), payload, images)
 
 	if err != nil {
-		var validationError *appErrors.ValidationError
-		if errors.As(err, &validationError) {
+		var vError *appErrors.ValidationError
+		if errors.As(err, &vError) {
 			h.logger.Warn(appErrors.ErrUpdateAdValidation.Error(), "err", err, "payload", payload)
 			response.Json(w, err, http.StatusBadRequest)
+		} else if errors.Is(err, appErrors.ErrForbidden) {
+			h.logger.Warn(appErrors.ErrForbidden.Error(), "err", err, "payload", payload)
+			http.Error(w, "forbidden", http.StatusForbidden)
 		} else {
 			h.logger.Error(appErrors.ErrUpdateAd.Error(), "err", err, "payload", payload)
 			http.Error(w, "internal server", http.StatusInternalServerError)
 		}
 		return
 	}
+
+	result.Result = true
 
 	response.Json(w, result, http.StatusOK)
 }
