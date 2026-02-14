@@ -42,6 +42,11 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 		argsPos++
 	}
 
+	// финальный фильтр по статусу
+	conditions = append(conditions, fmt.Sprintf("status = $%d", argsPos))
+	args = append(args, STATUS_ACTIVE)
+	argsPos++
+
 	where := ""
 	if len(conditions) > 0 {
 		where = "WHERE " + strings.Join(conditions, " AND ")
@@ -120,9 +125,10 @@ func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload Create
 			user_id,
 			city_id,
 			currency,
-			status
+			status,
+			expires_at
 		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_DATE + INTERVAL '1 month')
 		RETURNING uuid
 	`
 
@@ -136,7 +142,7 @@ func (repo *Repository) CreateAd(ctx context.Context, tx *sql.Tx, payload Create
 		userId,
 		1,
 		"VDN",
-		1,
+		STATUS_ACTIVE,
 	).Scan(&uuid)
 
 	if err != nil {
@@ -207,7 +213,7 @@ func (repo *Repository) FindAdByUuid(ctx context.Context, uuid uuid.UUID) (AdMod
 	return result, nil
 }
 
-func (repo *Repository) DeleteAdByUuid(ctx context.Context, tx *sql.Tx, uuid uuid.UUID) error {
+func (repo *Repository) DeleteAdByUuidWithTx(ctx context.Context, tx *sql.Tx, uuid uuid.UUID) error {
 	query := `
 		DELETE FROM ads
 		WHERE uuid = $1
@@ -218,6 +224,30 @@ func (repo *Repository) DeleteAdByUuid(ctx context.Context, tx *sql.Tx, uuid uui
 		query,
 		uuid,
 	)
+	if err != nil {
+		return err
+	}
+	
+	return nil
+}
+
+func (repo *Repository) ChangeStatusAdByUuidWithTx(ctx context.Context, tx *sql.Tx, status int, uuid uuid.UUID) error {
+	query := `
+		UPDATE ads
+		SET
+			status = $1,
+			updated_at = now()
+		WHERE 
+			uuid = $2
+	`
+	
+	_, err := tx.ExecContext(
+		ctx,
+		query,
+		status,
+		uuid,
+	)
+	
 	if err != nil {
 		return err
 	}

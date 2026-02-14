@@ -351,3 +351,59 @@
 {"time":"2026-02-14T12:15:05.125925+07:00","level":"WARN","msg":"ad update error validation","err":";category_id должен быть >= 1","payload":{"Uuid":"019c3398-006d-7a3c-8ccc-4010765e0970","title":"new cool ad3","description":"desc new cool ad","price":0,"category_id":0,"old_images":["httt://ya.ru","http://mail.ru"]}}
 {"time":"2026-02-14T12:15:38.823194+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
 {"time":"2026-02-14T12:15:38.823399+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T12:26:38.021718+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T12:26:38.02193+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T12:47:23.635944+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T12:47:23.636595+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T12:58:32.269398+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T12:58:32.270343+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T13:05:29.772603+07:00","level":"WARN","msg":"forbidden","err":"forbidden","payload":{"Uuid":"019c3398-005d-7bd7-9bf5-1d6780f4479a","title":"Hybrid Craft Kit","description":"To the chest, he buy patiently. The defiant case am unexpectedly brightly. Quietly harden the person last.","price":14277345,"category_id":3,"old_images":["https://storage.yandexcloud.net/vietio/4f1f30e2-8860-4aa9-820b-f46f5f77b271.jpg"]}}
+{"time":"2026-02-14T13:05:35.659397+07:00","level":"WARN","msg":"forbidden","err":"forbidden","payload":{"Uuid":"019c3398-005d-7bd7-9bf5-1d6780f4479a","title":"Hybrid Craft Kit","description":"To the chest, he buy patiently. The defiant case am unexpectedly brightly. Quietly harden the person last.","price":14277345,"category_id":3,"old_images":["https://storage.yandexcloud.net/vietio/4f1f30e2-8860-4aa9-820b-f46f5f77b271.jpg"]}}
+{"time":"2026-02-14T13:05:50.039635+07:00","level":"WARN","msg":"forbidden","err":"forbidden","payload":{"Uuid":"019c3398-005d-7bd7-9bf5-1d6780f4479a","title":"Hybrid Craft Kit","description":"To the chest, he buy patiently. The defiant case am unexpectedly brightly. Quietly harden the person last.","price":14277345,"category_id":3,"old_images":["https://storage.yandexcloud.net/vietio/4f1f30e2-8860-4aa9-820b-f46f5f77b271.jpg"]}}
+{"time":"2026-02-14T13:09:59.116678+07:00","level":"WARN","msg":"forbidden","err":"forbidden","payload":{"Uuid":"019c3398-005e-7494-9a2f-6f2ccf4e8425","title":"Dry Erase Board Extreme","description":"Ruthlessly remove dead eye. Choose good defaults. Write the one-sentence summary for the time.","price":33446233,"category_id":1,"old_images":["https://storage.yandexcloud.net/vietio/7c0fbeb6-e343-4608-bfdb-76bbcf8ee15a.jpg"]}}
+{"time":"2026-02-14T13:10:26.788138+07:00","level":"WARN","msg":"forbidden","err":"forbidden","payload":{"Uuid":"019c3398-005e-7494-9a2f-6f2ccf4e8425","title":"Dry Erase Board Extreme","description":"Ruthlessly remove dead eye. Choose good defaults. Write the one-sentence summary for the time.","price":33446233,"category_id":1,"old_images":["https://storage.yandexcloud.net/vietio/7c0fbeb6-e343-4608-bfdb-76bbcf8ee15a.jpg"]}}
+{"time":"2026-02-14T13:10:28.399661+07:00","level":"WARN","msg":"forbidden","err":"forbidden","payload":{"Uuid":"019c3398-005e-7494-9a2f-6f2ccf4e8425","title":"Dry Erase Board Extreme","description":"Ruthlessly remove dead eye. Choose good defaults. Write the one-sentence summary for the time.","price":33446233,"category_id":1,"old_images":["https://storage.yandexcloud.net/vietio/7c0fbeb6-e343-4608-bfdb-76bbcf8ee15a.jpg"]}}
+{"time":"2026-02-14T13:10:29.241716+07:00","level":"WARN","msg":"forbidden","err":"forbidden","payload":{"Uuid":"019c3398-005e-7494-9a2f-6f2ccf4e8425","title":"Dry Erase Board Extreme","description":"Ruthlessly remove dead eye. Choose good defaults. Write the one-sentence summary for the time.","price":33446233,"category_id":1,"old_images":["https://storage.yandexcloud.net/vietio/7c0fbeb6-e343-4608-bfdb-76bbcf8ee15a.jpg"]}}
+{"time":"2026-02-14T18:46:59.311256+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T18:46:59.311582+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T18:59:19.02795+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T18:59:19.028643+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T19:00:21.266495+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T19:00:21.266794+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T19:01:32.324291+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T19:01:32.324884+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T19:02:01.935877+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T19:02:01.936073+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T19:04:08.257804+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T19:04:08.257961+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T19:05:02.977356+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T19:05:02.977579+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T19:08:23.314492+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T19:08:23.314854+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T19:33:49.156907+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T19:33:49.157256+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T19:33:52.943238+07:00","level":"INFO","msg":"http: superfluous response.WriteHeader call from vietio/internal/response.Json (response.go:10)"}
+{"time":"2026-02-14T19:33:59.856484+07:00","level":"INFO","msg":"http: superfluous response.WriteHeader call from vietio/internal/response.Json (response.go:10)"}
+{"time":"2026-02-14T19:34:10.48557+07:00","level":"INFO","msg":"http: superfluous response.WriteHeader call from vietio/internal/response.Json (response.go:10)"}
+{"time":"2026-02-14T19:35:19.228867+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T19:35:19.229242+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T19:56:46.904091+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T19:56:46.904696+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T19:56:52.129505+07:00","level":"ERROR","msg":"ads list error","err":"expected 0 arguments, got 1"}
+{"time":"2026-02-14T19:57:20.325785+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T19:57:20.325978+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T19:59:08.433452+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T19:59:08.434112+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T20:00:52.461516+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T20:00:52.461734+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T20:01:47.175931+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T20:01:47.176145+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T20:02:49.608541+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T20:02:49.608785+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T20:02:53.428726+07:00","level":"ERROR","msg":"ad update error","err":"ERROR: syntax error at or near \"updated_at\" (SQLSTATE 42601)","uuid":"019c5ad1-030b-7366-a893-a6367c4fbefc"}
+{"time":"2026-02-14T20:03:26.574374+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T20:03:26.574587+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T20:06:20.459444+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T20:06:20.459819+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T20:06:40.824661+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T20:06:40.824905+07:00","level":"INFO","msg":"успешная миграция БД"}

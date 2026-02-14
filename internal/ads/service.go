@@ -374,9 +374,13 @@ func (s *Service) DeleteAd(ctx context.Context, uuid uuid.UUID) (DeleteAdRespons
 		}
 	}
 
-	err = s.repo.DeleteAdByUuid(ctx, tx, uuid)
+	err = s.repo.ChangeStatusAdByUuidWithTx(ctx, tx, STATUS_USER_DELETED, uuid)
 	if err != nil {
 		return result, err
+	}
+	
+	if err := tx.Commit(); err != nil {
+		return result, nil
 	}
 
 	result.Result = true

@@ -188,7 +188,13 @@ func (h *Handler) DeleteAd(w http.ResponseWriter, r *http.Request) {
 	result, err := h.service.DeleteAd(r.Context(), uuid)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		if errors.Is(err, appErrors.ErrForbidden) {
+			h.logger.Warn(appErrors.ErrForbidden.Error(), "err", "нет прав для удаления объявления", "uuid", uuid)
+			http.Error(w, "forbidden", http.StatusForbidden)
+		} else {
+			h.logger.Error(appErrors.ErrUpdateAd.Error(), "err", err, "uuid", uuid)
+			http.Error(w, "internal server", http.StatusInternalServerError)
+		}
 		return
 	}
 
