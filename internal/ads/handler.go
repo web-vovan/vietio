@@ -69,7 +69,19 @@ func (h *Handler) GetAd(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetMyAds(w http.ResponseWriter, r *http.Request) {
 	result, err := h.service.GetMyAds(r.Context())
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.logger.Error(appErrors.ErrMyAdsList.Error(), "err", err)
+		http.Error(w, "internal server", http.StatusInternalServerError)
+		return
+	}
+
+	response.Json(w, result, http.StatusOK)
+}
+
+func (h *Handler) GetMySoldAds(w http.ResponseWriter, r *http.Request) {
+	result, err := h.service.GetMySoldAds(r.Context())
+	if err != nil {
+		h.logger.Error(appErrors.ErrMySoldAdsList.Error(), "err", err)
+		http.Error(w, "internal server", http.StatusInternalServerError)
 		return
 	}
 
@@ -204,7 +216,7 @@ func (h *Handler) DeleteAd(w http.ResponseWriter, r *http.Request) {
 	response.Json(w, DeleteAdResponse{true}, http.StatusOK)
 }
 
-func (h *Handler) SoldAd(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) MarkingSoldAd(w http.ResponseWriter, r *http.Request) {
 	uuid, err := uuid.Parse(r.PathValue("uuid"))
 	if err != nil {
 		h.logger.Error(appErrors.ErrNotValidUuid.Error(), "err", err, "uuid", uuid)
@@ -212,7 +224,7 @@ func (h *Handler) SoldAd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.service.SoldAd(r.Context(), uuid)
+	err = h.service.MarkingSoldAd(r.Context(), uuid)
 
 	if err != nil {
 		if errors.Is(err, appErrors.ErrForbidden) {

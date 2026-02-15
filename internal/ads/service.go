@@ -153,6 +153,43 @@ func (s *Service) GetMyAds(ctx context.Context) (MyAdsListResponse, error) {
 	return result, nil
 }
 
+func (s *Service) GetMySoldAds(ctx context.Context) (MySoldAdsListResponse, error) {
+	var result MySoldAdsListResponse
+	userId, err := authctx.GeUserIdFromContext(ctx)
+	if err != nil {
+		return result, err
+	}
+
+	status := STATUS_SOLD
+	filterParams := AdsListFilterParams{
+		Page:   1,
+		Sort:   "created_at",
+		UserId: &userId,
+		Status: &status,
+		Order:  "desc",
+		Limit:  1000,
+	}
+	adsListRepository, _ := s.repo.FindAds(ctx, filterParams)
+
+	items := make([]AdsListItemResponse, 0, len(adsListRepository.Items))
+
+	for _, adItem := range adsListRepository.Items {
+		items = append(items, AdsListItemResponse{
+			Uuid:       adItem.Uuid,
+			Title:      adItem.Title,
+			CategoryId: adItem.CategoryId,
+			Price:      adItem.Price,
+			City:       "Нячанг",
+			CreatedAt:  adItem.CreatedAt,
+		})
+	}
+
+	result.Items = items
+	result.Total = len(items)
+
+	return result, nil
+}
+
 func (s *Service) CreateAd(ctx context.Context, payload CreateAdRequestBody, images []*multipart.FileHeader) (CreateAdResponse, error) {
 	result := CreateAdResponse{}
 
@@ -448,7 +485,7 @@ func (s *Service) ArchivingAds(ctx context.Context) error {
 	return nil
 }
 
-func (s *Service) SoldAd(ctx context.Context, uuid uuid.UUID) error {
+func (s *Service) MarkingSoldAd(ctx context.Context, uuid uuid.UUID) error {
 	contextUserId, err := authctx.GeUserIdFromContext(ctx)
 	if err != nil {
 		return err

@@ -580,3 +580,21 @@
 {"time":"2026-02-15T15:13:36.017167+07:00","level":"INFO","msg":"успешная миграция БД"}
 {"time":"2026-02-15T15:17:15.971662+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
 {"time":"2026-02-15T15:17:15.971844+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T15:24:37.74065+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T15:24:37.740839+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T16:28:10.087649+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T16:28:10.088014+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T16:45:16.143006+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T16:45:16.143225+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T16:45:19.458613+07:00","level":"ERROR","msg":"me ads list error","err":null}
+{"time":"2026-02-15T16:45:26.205561+07:00","level":"ERROR","msg":"me ads list error","err":null}
+{"time":"2026-02-15T16:45:54.961029+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T16:45:54.961206+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T16:46:23.077285+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T16:46:23.077428+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T16:49:09.516852+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T16:49:09.51707+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T16:49:13.224529+07:00","level":"ERROR","msg":"me sold ads list error","err":null}
+{"time":"2026-02-15T16:49:17.121219+07:00","level":"ERROR","msg":"me sold ads list error","err":null}
+{"time":"2026-02-15T16:49:28.94602+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T16:49:28.946379+07:00","level":"INFO","msg":"успешная миграция БД"}

@@ -147,7 +147,12 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 
 	router.Handle(
 		"POST /api/ads/{uuid}/sold",
-		authMiddleware(http.HandlerFunc(adsHandler.SoldAd)),
+		authMiddleware(http.HandlerFunc(adsHandler.MarkingSoldAd)),
+	)
+
+	router.Handle(
+		"GET /api/my/sold",
+		authMiddleware(http.HandlerFunc(adsHandler.GetMySoldAds)),
 	)
 
 	if config.Env == "dev" {

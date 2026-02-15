@@ -42,10 +42,15 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 		argsPos++
 	}
 
-	// финальный фильтр по статусу
-	conditions = append(conditions, fmt.Sprintf("status = $%d", argsPos))
-	args = append(args, STATUS_ACTIVE)
-	argsPos++
+	if params.Status != nil {
+		conditions = append(conditions, fmt.Sprintf("status = $%d", argsPos))
+		args = append(args, params.Status)
+		argsPos++
+	} else {
+		conditions = append(conditions, fmt.Sprintf("status = $%d", argsPos))
+		args = append(args, STATUS_ACTIVE)
+		argsPos++
+	}
 
 	where := ""
 	if len(conditions) > 0 {
