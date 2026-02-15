@@ -38,12 +38,12 @@ func (s *Service) GetJwtToken(ctx context.Context, payload AuthLoginRequestBody)
 	if err != nil {
 		return result, err
 	}
-
+	
 	user, err := s.UserRepo.GetUserByTelegramId(ctx, telegramUser.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			// создаем нового пользователя
-			user := appUser.UserModel{
+			user = appUser.UserModel{
 				TelegramId: telegramUser.ID,
 				Username:   telegramUser.Username,
 			}

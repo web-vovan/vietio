@@ -185,7 +185,7 @@ func (h *Handler) DeleteAd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := h.service.DeleteAd(r.Context(), uuid)
+	err = h.service.DeleteAd(r.Context(), uuid)
 
 	if err != nil {
 		if errors.Is(err, appErrors.ErrForbidden) {
@@ -198,5 +198,5 @@ func (h *Handler) DeleteAd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Json(w, result, http.StatusOK)
+	response.Json(w, DeleteAdResponse{true}, http.StatusOK)
 }

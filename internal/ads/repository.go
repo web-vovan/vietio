@@ -267,3 +267,33 @@ func (r *Repository) Exists(ctx context.Context, uuid uuid.UUID) (bool, error) {
     err := r.db.QueryRowContext(ctx, query, uuid).Scan(&result)
     return result, err
 }
+
+func (repo *Repository) FindExpiredUuidList(ctx context.Context) ([]string, error) {
+	var result = []string{}
+
+	query := fmt.Sprintf(`
+        SELECT
+			uuid
+		FROM 
+			ads
+		WHERE
+			expires_at < now()
+			and status = %d
+    `, STATUS_ACTIVE)
+
+	rows, err := repo.db.QueryContext(ctx, query)
+	if err != nil {
+		return result, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var uuid string
+		if err := rows.Scan(&uuid); err != nil {
+			return result, err
+		}
+		result = append(result, uuid)
+	}
+
+	return result, nil
+}

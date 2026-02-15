@@ -407,3 +407,170 @@
 {"time":"2026-02-14T20:06:20.459819+07:00","level":"INFO","msg":"успешная миграция БД"}
 {"time":"2026-02-14T20:06:40.824661+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
 {"time":"2026-02-14T20:06:40.824905+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-14T20:08:16.53532+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-14T20:08:16.536813+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T10:39:01.450396+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (13.15ms)"}
+{"time":"2026-02-15T10:39:01.456126+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (5.53ms)"}
+{"time":"2026-02-15T10:39:01.459702+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (3.54ms)"}
+{"time":"2026-02-15T10:39:01.462895+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (2.96ms)"}
+{"time":"2026-02-15T10:39:01.465941+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (2.96ms)"}
+{"time":"2026-02-15T10:39:01.466114+07:00","level":"INFO","msg":"rollback всех таблиц"}
+{"time":"2026-02-15T10:39:01.474818+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (8.21ms)"}
+{"time":"2026-02-15T10:39:01.479801+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (4.91ms)"}
+{"time":"2026-02-15T10:39:01.484329+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (4.47ms)"}
+{"time":"2026-02-15T10:39:01.489907+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (5.49ms)"}
+{"time":"2026-02-15T10:39:01.494739+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (4.8ms)"}
+{"time":"2026-02-15T10:39:01.494777+07:00","level":"INFO","msg":"goose: successfully migrated database to version: 20260106111810"}
+{"time":"2026-02-15T10:39:01.494792+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T10:39:06.695425+07:00","level":"INFO","msg":"сиды успешно добавлены"}
+{"time":"2026-02-15T10:39:29.978605+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T10:39:29.978832+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T10:51:44.90624+07:00","level":"INFO","msg":"объявления успешно отправлены в архив"}
+{"time":"2026-02-15T11:03:29.857167+07:00","level":"ERROR","msg":"ошибка при отправке объявлений в архив","err":"ERROR: syntax error at or near \"int\" (SQLSTATE 42601)"}
+{"time":"2026-02-15T11:03:57.587796+07:00","level":"INFO","msg":"объявления успешно отправлены в архив"}
+{"time":"2026-02-15T11:04:25.441702+07:00","level":"INFO","msg":"объявления успешно отправлены в архив"}
+{"time":"2026-02-15T11:04:34.025195+07:00","level":"INFO","msg":"объявления успешно отправлены в архив"}
+{"time":"2026-02-15T11:22:45.835307+07:00","level":"INFO","msg":"объявления успешно отправлены в архив"}
+{"time":"2026-02-15T11:23:03.839399+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T11:23:03.839581+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:23:11.863479+07:00","level":"ERROR","msg":"ad create error","err":"возникла ошибка при сохранении объявления: ERROR: insert or update on table \"ads\" violates foreign key constraint \"ads_user_id_foreign\" (SQLSTATE 23503)","payload":{"title":"dfsa","description":"sadf","price":0,"category_id":1}}
+{"time":"2026-02-15T11:26:30.240971+07:00","level":"ERROR","msg":"ad create error","err":"возникла ошибка при сохранении объявления: ERROR: insert or update on table \"ads\" violates foreign key constraint \"ads_user_id_foreign\" (SQLSTATE 23503)","payload":{"title":"ds","description":"sdfs","price":0,"category_id":1}}
+{"time":"2026-02-15T11:28:34.746005+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T11:28:34.746148+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:28:37.690167+07:00","level":"ERROR","msg":"ad create error","err":"возникла ошибка при сохранении объявления: ERROR: insert or update on table \"ads\" violates foreign key constraint \"ads_user_id_foreign\" (SQLSTATE 23503)","payload":{"title":"ds","description":"sdfs","price":0,"category_id":1}}
+{"time":"2026-02-15T11:29:48.338714+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T11:29:48.33885+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:29:49.709822+07:00","level":"ERROR","msg":"ad create error","err":"возникла ошибка при сохранении объявления: user id not found in context","payload":{"title":"ds","description":"sdfs","price":0,"category_id":1}}
+{"time":"2026-02-15T11:30:23.206524+07:00","level":"ERROR","msg":"ad create error","err":"возникла ошибка при сохранении объявления: user id not found in context","payload":{"title":"dfsf","description":"dfa","price":0,"category_id":1}}
+{"time":"2026-02-15T11:34:30.267602+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T11:34:30.267718+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:34:31.720615+07:00","level":"ERROR","msg":"ad create error","err":"возникла ошибка при сохранении объявления: user id not found in context","payload":{"title":"dfsf","description":"dfa","price":0,"category_id":1}}
+{"time":"2026-02-15T11:35:18.676072+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (8.54ms)"}
+{"time":"2026-02-15T11:35:18.68245+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (6.29ms)"}
+{"time":"2026-02-15T11:35:18.6851+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (2.61ms)"}
+{"time":"2026-02-15T11:35:18.688482+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (3.33ms)"}
+{"time":"2026-02-15T11:35:18.690931+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (2.41ms)"}
+{"time":"2026-02-15T11:35:18.691008+07:00","level":"INFO","msg":"rollback всех таблиц"}
+{"time":"2026-02-15T11:35:18.699318+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (7.87ms)"}
+{"time":"2026-02-15T11:35:18.702007+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (2.65ms)"}
+{"time":"2026-02-15T11:35:18.705448+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (3.39ms)"}
+{"time":"2026-02-15T11:35:18.712073+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (6.59ms)"}
+{"time":"2026-02-15T11:35:18.716171+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (4.07ms)"}
+{"time":"2026-02-15T11:35:18.716189+07:00","level":"INFO","msg":"goose: successfully migrated database to version: 20260106111810"}
+{"time":"2026-02-15T11:35:18.716203+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:35:24.290237+07:00","level":"INFO","msg":"сиды успешно добавлены"}
+{"time":"2026-02-15T11:35:39.394459+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T11:35:39.394515+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:35:55.715744+07:00","level":"ERROR","msg":"ad create error","err":"возникла ошибка при сохранении объявления: ERROR: insert or update on table \"ads\" violates foreign key constraint \"ads_user_id_foreign\" (SQLSTATE 23503)","payload":{"title":"csd","description":"wedwwd","price":0,"category_id":1}}
+{"time":"2026-02-15T11:36:07.646294+07:00","level":"ERROR","msg":"ad create error","err":"возникла ошибка при сохранении объявления: user id not found in context","payload":{"title":"csd","description":"wedwwd","price":0,"category_id":1}}
+{"time":"2026-02-15T11:38:45.06568+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (6.53ms)"}
+{"time":"2026-02-15T11:38:45.070829+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (5.09ms)"}
+{"time":"2026-02-15T11:38:45.073133+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (2.26ms)"}
+{"time":"2026-02-15T11:38:45.076491+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (3.32ms)"}
+{"time":"2026-02-15T11:38:45.078751+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (2.2ms)"}
+{"time":"2026-02-15T11:38:45.07884+07:00","level":"INFO","msg":"rollback всех таблиц"}
+{"time":"2026-02-15T11:38:45.084558+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (5.27ms)"}
+{"time":"2026-02-15T11:38:45.088197+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (3.58ms)"}
+{"time":"2026-02-15T11:38:45.092798+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (4.57ms)"}
+{"time":"2026-02-15T11:38:45.097719+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (4.89ms)"}
+{"time":"2026-02-15T11:38:45.101215+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (3.47ms)"}
+{"time":"2026-02-15T11:38:45.101248+07:00","level":"INFO","msg":"goose: successfully migrated database to version: 20260106111810"}
+{"time":"2026-02-15T11:38:45.101263+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:38:50.134792+07:00","level":"INFO","msg":"сиды успешно добавлены"}
+{"time":"2026-02-15T11:38:59.128832+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T11:38:59.129004+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:41:01.455959+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (6.75ms)"}
+{"time":"2026-02-15T11:41:01.460955+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (4.94ms)"}
+{"time":"2026-02-15T11:41:01.463939+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (2.94ms)"}
+{"time":"2026-02-15T11:41:01.46677+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (2.78ms)"}
+{"time":"2026-02-15T11:41:01.469215+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (2.41ms)"}
+{"time":"2026-02-15T11:41:01.469294+07:00","level":"INFO","msg":"rollback всех таблиц"}
+{"time":"2026-02-15T11:41:01.475512+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (5.78ms)"}
+{"time":"2026-02-15T11:41:01.478121+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (2.58ms)"}
+{"time":"2026-02-15T11:41:01.481221+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (3.05ms)"}
+{"time":"2026-02-15T11:41:01.485493+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (4.18ms)"}
+{"time":"2026-02-15T11:41:01.490445+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (4.9ms)"}
+{"time":"2026-02-15T11:41:01.490473+07:00","level":"INFO","msg":"goose: successfully migrated database to version: 20260106111810"}
+{"time":"2026-02-15T11:41:01.49049+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:41:06.268422+07:00","level":"INFO","msg":"сиды успешно добавлены"}
+{"time":"2026-02-15T11:41:08.59801+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T11:41:08.598187+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:41:15.011378+07:00","level":"ERROR","msg":"ad error","err":"user id not found in context","uuid":"019c5f98-088d-7289-b1fa-a10ae44c4ade"}
+{"time":"2026-02-15T11:51:53.588049+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (8.45ms)"}
+{"time":"2026-02-15T11:51:53.593805+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (5.51ms)"}
+{"time":"2026-02-15T11:51:53.596646+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (2.8ms)"}
+{"time":"2026-02-15T11:51:53.600797+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (4.11ms)"}
+{"time":"2026-02-15T11:51:53.603064+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (2.22ms)"}
+{"time":"2026-02-15T11:51:53.603162+07:00","level":"INFO","msg":"rollback всех таблиц"}
+{"time":"2026-02-15T11:51:53.611309+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (7.66ms)"}
+{"time":"2026-02-15T11:51:53.616219+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (4.87ms)"}
+{"time":"2026-02-15T11:51:53.620433+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (4.19ms)"}
+{"time":"2026-02-15T11:51:53.624636+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (4.17ms)"}
+{"time":"2026-02-15T11:51:53.629328+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (4.66ms)"}
+{"time":"2026-02-15T11:51:53.629378+07:00","level":"INFO","msg":"goose: successfully migrated database to version: 20260106111810"}
+{"time":"2026-02-15T11:51:53.629393+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:51:58.636641+07:00","level":"INFO","msg":"сиды успешно добавлены"}
+{"time":"2026-02-15T11:52:01.072171+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T11:52:01.072357+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:52:08.04047+07:00","level":"ERROR","msg":"ad error","err":"user id not found in context","uuid":"019c5f9a-1d53-769d-ae63-269e99afca08"}
+{"time":"2026-02-15T11:54:05.058383+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (8.42ms)"}
+{"time":"2026-02-15T11:54:05.063959+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (5.5ms)"}
+{"time":"2026-02-15T11:54:05.066245+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (2.24ms)"}
+{"time":"2026-02-15T11:54:05.069248+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (2.97ms)"}
+{"time":"2026-02-15T11:54:05.07085+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (1.58ms)"}
+{"time":"2026-02-15T11:54:05.070931+07:00","level":"INFO","msg":"rollback всех таблиц"}
+{"time":"2026-02-15T11:54:05.07609+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (4.75ms)"}
+{"time":"2026-02-15T11:54:05.079951+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (3.83ms)"}
+{"time":"2026-02-15T11:54:05.083413+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (3.43ms)"}
+{"time":"2026-02-15T11:54:05.088357+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (4.9ms)"}
+{"time":"2026-02-15T11:54:05.092768+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (4.37ms)"}
+{"time":"2026-02-15T11:54:05.092836+07:00","level":"INFO","msg":"goose: successfully migrated database to version: 20260106111810"}
+{"time":"2026-02-15T11:54:05.092855+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:54:10.326152+07:00","level":"INFO","msg":"сиды успешно добавлены"}
+{"time":"2026-02-15T11:54:13.354737+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T11:54:13.355006+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:57:37.44468+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (4.75ms)"}
+{"time":"2026-02-15T11:57:37.44892+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (4.15ms)"}
+{"time":"2026-02-15T11:57:37.450992+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (1.96ms)"}
+{"time":"2026-02-15T11:57:37.453113+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (2.08ms)"}
+{"time":"2026-02-15T11:57:37.454588+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (1.43ms)"}
+{"time":"2026-02-15T11:57:37.45466+07:00","level":"INFO","msg":"rollback всех таблиц"}
+{"time":"2026-02-15T11:57:37.460275+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (4.9ms)"}
+{"time":"2026-02-15T11:57:37.464406+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (4.1ms)"}
+{"time":"2026-02-15T11:57:37.467523+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (3.1ms)"}
+{"time":"2026-02-15T11:57:37.471941+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (4.39ms)"}
+{"time":"2026-02-15T11:57:37.476299+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (4.32ms)"}
+{"time":"2026-02-15T11:57:37.476319+07:00","level":"INFO","msg":"goose: successfully migrated database to version: 20260106111810"}
+{"time":"2026-02-15T11:57:37.476329+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T11:57:42.443986+07:00","level":"INFO","msg":"сиды успешно добавлены"}
+{"time":"2026-02-15T11:58:08.507015+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T11:58:08.507194+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T12:00:11.859496+07:00","level":"INFO","msg":"объявления успешно отправлены в архив"}
+{"time":"2026-02-15T12:00:27.500506+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T12:00:27.500545+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T12:13:14.532795+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T12:13:14.533138+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T12:13:53.10428+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (10.09ms)"}
+{"time":"2026-02-15T12:13:53.108149+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (3.77ms)"}
+{"time":"2026-02-15T12:13:53.110212+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (2.04ms)"}
+{"time":"2026-02-15T12:13:53.11269+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (2.46ms)"}
+{"time":"2026-02-15T12:13:53.114781+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (2.05ms)"}
+{"time":"2026-02-15T12:13:53.114869+07:00","level":"INFO","msg":"rollback всех таблиц"}
+{"time":"2026-02-15T12:13:53.121032+07:00","level":"INFO","msg":"OK   20260106110727_create_category_table.sql (5.47ms)"}
+{"time":"2026-02-15T12:13:53.123577+07:00","level":"INFO","msg":"OK   20260106111153_create_city_table.sql (2.5ms)"}
+{"time":"2026-02-15T12:13:53.125653+07:00","level":"INFO","msg":"OK   20260106111555_create_users_table.sql (2.05ms)"}
+{"time":"2026-02-15T12:13:53.129649+07:00","level":"INFO","msg":"OK   20260106111711_create_ads_table.sql (3.94ms)"}
+{"time":"2026-02-15T12:13:53.134486+07:00","level":"INFO","msg":"OK   20260106111810_create_files_table.sql (4.81ms)"}
+{"time":"2026-02-15T12:13:53.134498+07:00","level":"INFO","msg":"goose: successfully migrated database to version: 20260106111810"}
+{"time":"2026-02-15T12:13:53.134508+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T12:13:59.845574+07:00","level":"INFO","msg":"сиды успешно добавлены"}
+{"time":"2026-02-15T12:14:02.04228+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T12:14:02.042335+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T12:23:26.483497+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T12:23:26.483669+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T12:24:05.75066+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T12:24:05.750868+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T12:24:07.840689+07:00","level":"ERROR","msg":"panic recovered","error":"runtime error: invalid memory address or nil pointer dereference","stack":"goroutine 26 [running]:\nruntime/debug.Stack()\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/runtime/debug/stack.go:26 +0x64\nvietio/internal/app.RunHttpServer.RecoverMiddleware.func8.1()\n\t/Users/vladimir/brainstorm/vietio/internal/middleware/recover.go:15 +0x88\npanic({0x10327f380?, 0x103b2d7a0?})\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/runtime/panic.go:783 +0x120\nvietio/internal/ads.(*Handler).GetMyAds(0x130?, {0x1033e8ab8, 0x14000131680}, 0x1027e8e34?)\n\t/Users/vladimir/brainstorm/vietio/internal/ads/handler.go:71 +0x9c\nnet/http.HandlerFunc.ServeHTTP(0x140002c4b40?, {0x1033e8ab8?, 0x14000131680?}, 0x1033d3470?)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2322 +0x38\nvietio/internal/app.RunHttpServer.RunHttpServer.AuthJWT.func1.func2({0x1033e8ab8, 0x14000131680}, 0x140002c4b40)\n\t/Users/vladimir/brainstorm/vietio/internal/middleware/auth_jwt.go:37 +0x170\nnet/http.HandlerFunc.ServeHTTP(0x14000270c00?, {0x1033e8ab8?, 0x14000131680?}, 0x0?)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2322 +0x38\nnet/http.(*ServeMux).ServeHTTP(0x14000081008?, {0x1033e8ab8, 0x14000131680}, 0x140002c4b40)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2861 +0x190\nvietio/internal/app.RunHttpServer.RecoverMiddleware.func8({0x1033e8ab8?, 0x14000131680?}, 0x140001246c8?)\n\t/Users/vladimir/brainstorm/vietio/internal/middleware/recover.go:23 +0x6c\nnet/http.HandlerFunc.ServeHTTP(0x140002b1600?, {0x1033e8ab8?, 0x14000131680?}, 0x1400008ab50?)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2322 +0x38\nnet/http.serverHandler.ServeHTTP({0x140002a9280?}, {0x1033e8ab8?, 0x14000131680?}, 0x6?)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:3340 +0xb0\nnet/http.(*conn).serve(0x14000261830, {0x1033ea4c8, 0x140002e9b00})\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2109 +0x528\ncreated by net/http.(*Server).Serve in goroutine 1\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:3493 +0x384\n","method":"GET","path":"/api/my"}
+{"time":"2026-02-15T12:24:15.986015+07:00","level":"ERROR","msg":"panic recovered","error":"runtime error: invalid memory address or nil pointer dereference","stack":"goroutine 52 [running]:\nruntime/debug.Stack()\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/runtime/debug/stack.go:26 +0x64\nvietio/internal/app.RunHttpServer.RecoverMiddleware.func8.1()\n\t/Users/vladimir/brainstorm/vietio/internal/middleware/recover.go:15 +0x88\npanic({0x10327f380?, 0x103b2d7a0?})\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/runtime/panic.go:783 +0x120\nvietio/internal/ads.(*Handler).GetMyAds(0x130?, {0x1033e8ab8, 0x14000462000}, 0x1027e8e34?)\n\t/Users/vladimir/brainstorm/vietio/internal/ads/handler.go:71 +0x9c\nnet/http.HandlerFunc.ServeHTTP(0x14000434280?, {0x1033e8ab8?, 0x14000462000?}, 0x1033d3470?)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2322 +0x38\nvietio/internal/app.RunHttpServer.RunHttpServer.AuthJWT.func1.func2({0x1033e8ab8, 0x14000462000}, 0x14000434280)\n\t/Users/vladimir/brainstorm/vietio/internal/middleware/auth_jwt.go:37 +0x170\nnet/http.HandlerFunc.ServeHTTP(0x14000270c00?, {0x1033e8ab8?, 0x14000462000?}, 0x0?)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2322 +0x38\nnet/http.(*ServeMux).ServeHTTP(0x14000100008?, {0x1033e8ab8, 0x14000462000}, 0x14000434280)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2861 +0x190\nvietio/internal/app.RunHttpServer.RecoverMiddleware.func8({0x1033e8ab8?, 0x14000462000?}, 0x14000416010?)\n\t/Users/vladimir/brainstorm/vietio/internal/middleware/recover.go:23 +0x6c\nnet/http.HandlerFunc.ServeHTTP(0x14000408140?, {0x1033e8ab8?, 0x14000462000?}, 0x14000303b50?)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2322 +0x38\nnet/http.serverHandler.ServeHTTP({0x14000412140?}, {0x1033e8ab8?, 0x14000462000?}, 0x6?)\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:3340 +0xb0\nnet/http.(*conn).serve(0x14000438120, {0x1033ea4c8, 0x140002e9b00})\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:2109 +0x528\ncreated by net/http.(*Server).Serve in goroutine 1\n\t/opt/homebrew/Cellar/go/1.25.3/libexec/src/net/http/server.go:3493 +0x384\n","method":"GET","path":"/api/my"}
+{"time":"2026-02-15T12:24:55.030174+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T12:24:55.031068+07:00","level":"INFO","msg":"успешная миграция БД"}

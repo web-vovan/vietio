@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"io"
 	"log/slog"
 	"os"
@@ -12,33 +13,42 @@ import (
 )
 
 func main() {
-    logger, logFile := setupLogger()
+	logger, logFile := setupLogger()
 	defer logFile.Close()
 
 	slog.SetDefault(logger)
 
-    config := config.Load()
+	config := config.Load()
 
-    dbConn, err := sql.Open("pgx", config.Db.Dsn)
-    if err != nil {
-        logger.Error("db not connection", "err", err)
-        os.Exit(1)
-    }
-    defer dbConn.Close()
+	dbConn, err := sql.Open("pgx", config.Db.Dsn)
+	if err != nil {
+		logger.Error("db not connection", "err", err)
+		os.Exit(1)
+	}
+	defer dbConn.Close()
 
-    if err := dbConn.Ping(); err != nil {
-        logger.Error("db ping failed", "err", err)
-        os.Exit(1)
-    }
+	if err := dbConn.Ping(); err != nil {
+		logger.Error("db ping failed", "err", err)
+		os.Exit(1)
+	}
 
-    if config.SeedFlag {
-        app.RunSeed(dbConn, config, logger)
+	seedFlag := flag.Bool("seed", false, "наполнение БД тестовыми данными")
+	archiveFlag := flag.Bool("archive", false, "архивирование старых объявлений")
+	flag.Parse()
+
+	if *seedFlag {
+		app.RunSeed(dbConn, config, logger)
 		return
-    }
-        
+	}
+
+	if *archiveFlag {
+		app.RunArchive(dbConn, config, logger)
+		return
+	}
+
 	app.RunMigrations(dbConn, logger)
 
-    app.RunHttpServer(dbConn, config, logger)
+	app.RunHttpServer(dbConn, config, logger)
 }
 
 func setupLogger() (*slog.Logger, *os.File) {

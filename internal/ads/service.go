@@ -124,10 +124,6 @@ func (s *Service) GetMyAds(ctx context.Context) (MyAdsListResponse, error) {
 		return result, err
 	}
 
-	if userId == 0 {
-		return result, errors.New("пользователь не авторизован")
-	}
-
 	filterParams := AdsListFilterParams{
 		Page:   1,
 		Sort:   "created_at",
@@ -329,63 +325,72 @@ func (s *Service) UpdateAd(ctx context.Context, payload UpdateAdRequestBody, ima
 	return result, err
 }
 
-func (s *Service) DeleteAd(ctx context.Context, uuid uuid.UUID) (DeleteAdResponse, error) {
-	var result DeleteAdResponse
+func (s *Service) ArchiveAd(ctx context.Context, uuid uuid.UUID) error {
+	ad, err := s.repo.FindAdByUuid(ctx, uuid)
+	if err != nil {
+		return err
+	}
 
+	return s.processDeleteAd(ctx, ad, STATUS_EXPIRED)
+}
+
+func (s *Service) DeleteAd(ctx context.Context, uuid uuid.UUID) error {
 	contextUserId, err := authctx.GeUserIdFromContext(ctx)
 	if err != nil {
-		return result, err
+		return err
 	}
-
-	tx, err := s.repo.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
-	if err != nil {
-		return result, err
-	}
-	defer tx.Rollback()
 
 	ad, err := s.repo.FindAdByUuid(ctx, uuid)
 	if err != nil {
-		return result, err
+		return err
 	}
 
 	if ad.UserId != contextUserId {
-		return result, appErrors.ErrForbidden
+		return appErrors.ErrForbidden
 	}
 
-	files, err := s.fileRepo.FindFilesByAdUuid(ctx, uuid)
+	return s.processDeleteAd(ctx, ad, STATUS_USER_DELETED)
+}
+
+func (s *Service) processDeleteAd(ctx context.Context, ad AdModel, finalStatus int) error {
+	tx, err := s.repo.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
-		return result, err
+		return err
+	}
+	defer tx.Rollback()
+
+	files, err := s.fileRepo.FindFilesByAdUuid(ctx, ad.Uuid)
+	if err != nil {
+		return err
 	}
 
 	for _, f := range files {
 		err = s.fileRepo.DeleteById(ctx, tx, f.Id)
 		if err != nil {
-			return result, err
+			return err
 		}
 
 		err = s.storage.DeleteByPath(ctx, f.Path)
 		if err != nil {
-			return result, err
+			return err
 		}
 
 		err = s.storage.DeleteByPath(ctx, f.PreviewPath)
 		if err != nil {
-			return result, err
+			return err
 		}
 	}
 
-	err = s.repo.ChangeStatusAdByUuidWithTx(ctx, tx, STATUS_USER_DELETED, uuid)
+	err = s.repo.ChangeStatusAdByUuidWithTx(ctx, tx, finalStatus, ad.Uuid)
 	if err != nil {
-		return result, err
+		return err
 	}
 	
 	if err := tx.Commit(); err != nil {
-		return result, nil
+		return nil
 	}
 
-	result.Result = true
-
-	return result, err
+	return err
 }
 
 func (s *Service) saveNewImages(
@@ -421,6 +426,23 @@ func (s *Service) saveNewImages(
 		if err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (s *Service) ArchivingAds(ctx context.Context) error {
+	uuidList, err := s.repo.FindExpiredUuidList(ctx)
+	if err != nil {
+		return err
+	}
+	
+	for _, uuidItem := range uuidList {
+		r, err := uuid.Parse(uuidItem)
+		if err != nil {
+			return err
+		}
+		s.ArchiveAd(ctx, r)
 	}
 
 	return nil

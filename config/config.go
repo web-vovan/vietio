@@ -1,7 +1,6 @@
 package config
 
 import (
-	"flag"
 	"log"
 	"os"
 
@@ -9,7 +8,6 @@ import (
 )
 
 type Config struct {
-	SeedFlag    bool
 	Env         string
 	BotToken    string
 	Server      Server
@@ -36,9 +34,6 @@ type DbConfig struct {
 }
 
 func Load() *Config {
-	seedFlag := flag.Bool("seed", false, "наполнение БД тестовыми данными")
-	flag.Parse()
-
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("not found .env file")
@@ -100,8 +95,7 @@ func Load() *Config {
 	}
 
 	return &Config{
-		SeedFlag: *seedFlag,
-		Env:      env,
+		Env: env,
 		Server: Server{
 			HttpPort:  httpPort,
 			PublicUrl: publicUrl,

@@ -60,6 +60,35 @@ func RunSeed(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	logger.Info("сиды успешно добавлены")
 }
 
+func RunArchive(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
+	adsRepository := ads.NewRepository(dbConn)
+	categoryRepository := categories.NewRepository(dbConn)
+	fileRepository := file.NewFileRepository(dbConn)
+	userRepository := user.NewRepository(dbConn)
+	adValidator := ads.NewValidator(categoryRepository, adsRepository)
+
+	fileStorage, err := getFileStorage(config, logger)
+	if err != nil {
+		os.Exit(1)
+	}
+
+	adsService := ads.NewService(
+		adsRepository,
+		fileRepository,
+		userRepository,
+		fileStorage,
+		adValidator,
+	)
+
+	err = adsService.ArchivingAds(context.Background())
+	if err != nil {
+		logger.Error("ошибка при отправке объявлений в архив", "err", err)
+		os.Exit(1)
+	}
+
+	logger.Info("объявления успешно отправлены в архив")
+}
+
 func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	adsRepository := ads.NewRepository(dbConn)
 	categoryRepository := categories.NewRepository(dbConn)
