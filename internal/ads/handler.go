@@ -46,7 +46,8 @@ func (h *Handler) GetAds(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetAd(w http.ResponseWriter, r *http.Request) {
 	uuid, err := uuid.Parse(r.PathValue("uuid"))
 	if err != nil {
-		http.Error(w, "невалидный uuid в запросе", http.StatusBadRequest)
+		h.logger.Error(appErrors.ErrNotValidUuid.Error(), "err", err, "uuid", uuid)
+		http.Error(w, appErrors.ErrNotValidUuid.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -123,7 +124,8 @@ func (h *Handler) CreateAd(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) UpdateAd(w http.ResponseWriter, r *http.Request) {
 	uuid, err := uuid.Parse(r.PathValue("uuid"))
 	if err != nil {
-		http.Error(w, "невалидный uuid в запросе", http.StatusInternalServerError)
+		h.logger.Error(appErrors.ErrNotValidUuid.Error(), "err", err, "uuid", uuid)
+		http.Error(w, appErrors.ErrNotValidUuid.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -181,7 +183,8 @@ func (h *Handler) UpdateAd(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) DeleteAd(w http.ResponseWriter, r *http.Request) {
 	uuid, err := uuid.Parse(r.PathValue("uuid"))
 	if err != nil {
-		http.Error(w, "невалидный uuid в запросе", http.StatusInternalServerError)
+		h.logger.Error(appErrors.ErrNotValidUuid.Error(), "err", err, "uuid", uuid)
+		http.Error(w, appErrors.ErrNotValidUuid.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -192,7 +195,31 @@ func (h *Handler) DeleteAd(w http.ResponseWriter, r *http.Request) {
 			h.logger.Warn(appErrors.ErrForbidden.Error(), "err", "нет прав для удаления объявления", "uuid", uuid)
 			http.Error(w, "forbidden", http.StatusForbidden)
 		} else {
-			h.logger.Error(appErrors.ErrUpdateAd.Error(), "err", err, "uuid", uuid)
+			h.logger.Error(appErrors.ErrDeleteAd.Error(), "err", err, "uuid", uuid)
+			http.Error(w, "internal server", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	response.Json(w, DeleteAdResponse{true}, http.StatusOK)
+}
+
+func (h *Handler) SoldAd(w http.ResponseWriter, r *http.Request) {
+	uuid, err := uuid.Parse(r.PathValue("uuid"))
+	if err != nil {
+		h.logger.Error(appErrors.ErrNotValidUuid.Error(), "err", err, "uuid", uuid)
+		http.Error(w, appErrors.ErrNotValidUuid.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = h.service.SoldAd(r.Context(), uuid)
+
+	if err != nil {
+		if errors.Is(err, appErrors.ErrForbidden) {
+			h.logger.Warn(appErrors.ErrForbidden.Error(), "err", "нет прав для изменения статуса объявления", "uuid", uuid)
+			http.Error(w, "forbidden", http.StatusForbidden)
+		} else {
+			h.logger.Error(appErrors.ErrSoldAd.Error(), "err", err, "uuid", uuid)
 			http.Error(w, "internal server", http.StatusInternalServerError)
 		}
 		return

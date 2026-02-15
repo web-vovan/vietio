@@ -447,3 +447,21 @@ func (s *Service) ArchivingAds(ctx context.Context) error {
 
 	return nil
 }
+
+func (s *Service) SoldAd(ctx context.Context, uuid uuid.UUID) error {
+	contextUserId, err := authctx.GeUserIdFromContext(ctx)
+	if err != nil {
+		return err
+	}
+
+	ad, err := s.repo.FindAdByUuid(ctx, uuid)
+	if err != nil {
+		return err
+	}
+
+	if ad.UserId != contextUserId {
+		return appErrors.ErrForbidden
+	}
+
+	return s.processDeleteAd(ctx, ad, STATUS_SOLD)
+}

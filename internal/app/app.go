@@ -145,6 +145,11 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 		authMiddleware(http.HandlerFunc(adsHandler.DeleteAd)),
 	)
 
+	router.Handle(
+		"POST /api/ads/{uuid}/sold",
+		authMiddleware(http.HandlerFunc(adsHandler.SoldAd)),
+	)
+
 	if config.Env == "dev" {
 		router.HandleFunc("/api/test-init-data/{username}", authHandler.GetTestInitData)
 	}
