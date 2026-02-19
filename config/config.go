@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -39,10 +40,16 @@ func Load() *Config {
 		log.Fatal("not found .env file")
 	}
 
-	dsn := os.Getenv("DATABASE_URL")
-	if dsn == "" {
-		log.Fatal("DATABASE_URL is not set")
-	}
+	// db config
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dsn := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		dbUser, dbPassword, dbHost, dbPort, dbName,
+	)
 
 	httpPort := os.Getenv("HTTP_PORT")
 	if httpPort == "" {

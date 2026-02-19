@@ -598,3 +598,10 @@
 {"time":"2026-02-15T16:49:17.121219+07:00","level":"ERROR","msg":"me sold ads list error","err":null}
 {"time":"2026-02-15T16:49:28.94602+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
 {"time":"2026-02-15T16:49:28.946379+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-15T17:25:15.731592+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-15T17:25:15.731631+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-18T11:10:47.449212+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-18T11:10:47.449593+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-18T11:10:54.793444+07:00","level":"ERROR","msg":"db ping failed","err":"failed to connect to `user= database=vietio`:\n\t[::1]:5432 (localhost): server error: FATAL: no PostgreSQL user name specified in startup packet (SQLSTATE 28000)\n\t127.0.0.1:5432 (localhost): server error: FATAL: no PostgreSQL user name specified in startup packet (SQLSTATE 28000)"}
+{"time":"2026-02-18T11:10:59.734286+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-18T11:10:59.73448+07:00","level":"INFO","msg":"успешная миграция БД"}

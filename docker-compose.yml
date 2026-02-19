@@ -1,0 +1,32 @@
+services:
+
+  postgres:
+    image: postgres:18-bookworm
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - vietio-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: deploy/backend/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - vietio-network
+
+volumes:
+  postgres_data:
+
+networks:
+  vietio-network:
+    driver: bridge
