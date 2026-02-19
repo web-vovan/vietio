@@ -605,3 +605,5 @@
 {"time":"2026-02-18T11:10:54.793444+07:00","level":"ERROR","msg":"db ping failed","err":"failed to connect to `user= database=vietio`:\n\t[::1]:5432 (localhost): server error: FATAL: no PostgreSQL user name specified in startup packet (SQLSTATE 28000)\n\t127.0.0.1:5432 (localhost): server error: FATAL: no PostgreSQL user name specified in startup packet (SQLSTATE 28000)"}
 {"time":"2026-02-18T11:10:59.734286+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
 {"time":"2026-02-18T11:10:59.73448+07:00","level":"INFO","msg":"успешная миграция БД"}
+{"time":"2026-02-19T22:56:58.361113+07:00","level":"INFO","msg":"goose: no migrations to run. current version: 20260106111810"}
+{"time":"2026-02-19T22:56:58.364774+07:00","level":"INFO","msg":"успешная миграция БД"}

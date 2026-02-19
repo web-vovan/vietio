@@ -22,7 +22,7 @@ services:
   frontend-builder:
     build:
       context: ../vietio-ui
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     volumes:
       - frontend_build:/app/build
     command: npm run build
