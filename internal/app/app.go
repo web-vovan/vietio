@@ -155,9 +155,10 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 		authMiddleware(http.HandlerFunc(adsHandler.GetMySoldAds)),
 	)
 
-	if config.Env == "dev" {
+	// @todo убрать
+	// if config.Env == "dev" {
 		router.HandleFunc("/api/test-init-data/{username}", authHandler.GetTestInitData)
-	}
+	// }
 
 	// отдаем статику для локального хранилища
 	if config.StorageType == "local" {
