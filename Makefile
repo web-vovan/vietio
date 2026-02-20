@@ -1,3 +1,5 @@
+.PHONY: up down restart build logs all front back
+
 # Запуск всего проекта в фоновом режиме
 up:
 	docker compose up -d
@@ -14,21 +16,27 @@ restart:
 build:
 	docker compose build
 
-# Посмотреть статус всех контейнеров
-ps:
-	docker compose ps
-
-# Читать логи ТОЛЬКО бэкенда
-logs-back:
+# Читать логи только бэкенда
+logs:
 	docker compose logs -f backend
 
-# Обновить ТОЛЬКО фронтенд
+# Обновить все
+all:
+	git pull
+	git -C ../vietio-ui pull
+	docker compose build
+	docker compose down
+	docker compose up -d
+
+# Обновить только фронт
 front:
+	git -C ../vietio-ui pull
 	docker compose build frontend-builder
 	docker compose up --force-recreate -d frontend-builder
 
-# Обновить ТОЛЬКО бэкенд
+# Обновить только бэк
 back:
+	git pull
 	docker compose build backend
 	docker compose up --force-recreate -d backend
 	docker compose restart nginx

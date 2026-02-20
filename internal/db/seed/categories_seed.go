@@ -8,12 +8,13 @@ func runCategoriesSeed(dbConn *sql.DB) error {
     _, err := dbConn.Exec(`
         INSERT INTO categories ("name", "order")
         VALUES
-            ('аренда байка', 1),
-            ('аренда жилья', 2),
-            ('личные вещи', 3),
-            ('бесплатно', 4)
+            ('Барахолка', 1),
+            ('Байки', 2),
+            ('Жильё', 3),
+            ('Услуги', 4)
+            ('Разное', 5)
     `)
-
+    
     if err != nil {
         return err
     }
