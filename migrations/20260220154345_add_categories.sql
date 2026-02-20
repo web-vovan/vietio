@@ -11,5 +11,5 @@ VALUES
 
 -- +goose Down
 -- +goose StatementBegin
-TRUNCATE TABLE categories;
+TRUNCATE TABLE categories RESTART IDENTITY CASCADE;
 -- +goose StatementEnd
