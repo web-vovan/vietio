@@ -2,6 +2,7 @@ services:
 
   postgres:
     image: postgres:18-bookworm
+    container_name: postgres
     env_file:
       - .env
     environment:
@@ -9,23 +10,62 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
+      - ./app.log:/app/app.log
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - vietio-network
 
   backend:
+    container_name: backend
     build:
       context: .
       dockerfile: deploy/backend/Dockerfile
     env_file:
       - .env
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./app.log:/app/app.log
+    restart: always
+    networks:
+      - vietio-network
+
+  nginx:
+    container_name: nginx
+    image: nginx:stable
+    ports:
+      - "80:80"
+    volumes:
+      - ./deploy/nginx/site.conf:/etc/nginx/conf.d/default.conf
+      - frontend_build:/usr/share/nginx/html
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - vietio-network
+
+  frontend-builder:
+    container_name: frontend-builder
+    build:
+      context: ../vietio-ui
+      dockerfile: ./Dockerfile
+    volumes:
+      - frontend_build:/app/build
+    command: npm run build
+    restart: "no"
     networks:
       - vietio-network
 
 volumes:
   postgres_data:
+  frontend_build:
 
 networks:
   vietio-network:
