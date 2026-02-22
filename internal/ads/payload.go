@@ -45,6 +45,7 @@ type AdModel struct {
 	UserId      int64
 	CategoryId  int
 	Price       int
+	Status      int
 	CreatedAt   time.Time
 }
 

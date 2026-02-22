@@ -19,6 +19,7 @@ var ErrMyAdsList = errors.New("me ads list error")
 var ErrMySoldAdsList = errors.New("me sold ads list error")
 
 var ErrAdNotFound = errors.New("ad not found")
+var ErrAdNotActive = errors.New("ad not active")
 var ErrAdUserNotFound = errors.New("ad user not found")
 
 type ValidationError struct {

@@ -239,6 +239,10 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 		return result, err
 	}
 
+	if adModel.Status != STATUS_ACTIVE {
+		return result, appErrors.ErrAdNotActive
+	}
+
 	adFiles, err := s.fileRepo.FindFilesByAdUuid(ctx, uuid)
 	if err != nil {
 		return result, err

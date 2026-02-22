@@ -196,6 +196,7 @@ func (repo *Repository) FindAdByUuid(ctx context.Context, uuid uuid.UUID) (AdMod
 			user_id,
             category_id,
             price,
+			status,
             created_at
 		FROM ads
 		WHERE uuid = $1
@@ -209,6 +210,7 @@ func (repo *Repository) FindAdByUuid(ctx context.Context, uuid uuid.UUID) (AdMod
 		&result.UserId,
 		&result.CategoryId,
 		&result.Price,
+		&result.Status,
 		&result.CreatedAt,
 	)
 	if err != nil {

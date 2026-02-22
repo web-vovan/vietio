@@ -55,7 +55,11 @@ func (h *Handler) GetAd(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch {
 		case errors.Is(err, appErrors.ErrAdNotFound):
+			h.logger.Info(appErrors.ErrAdNotFound.Error(), "err", err, "uuid", uuid)
 			http.Error(w, appErrors.ErrAdNotFound.Error(), http.StatusNotFound)
+		case errors.Is(err, appErrors.ErrAdNotActive):
+			h.logger.Info(appErrors.ErrAdNotActive.Error(), "err", err, "uuid", uuid)
+			http.Error(w, appErrors.ErrAdNotActive.Error(), http.StatusNotFound)
 		default:
 			h.logger.Error(appErrors.ErrAd.Error(), "err", err, "uuid", uuid)
 			http.Error(w, "internal server error", http.StatusInternalServerError)
