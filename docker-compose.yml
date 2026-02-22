@@ -39,14 +39,17 @@ services:
     networks:
       - vietio-network
 
-  nginx:
-    container_name: nginx
-    image: nginx:stable
+  caddy:
+    container_name: caddy
+    image: caddy:latest
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./deploy/nginx/site.conf:/etc/nginx/conf.d/default.conf
-      - frontend_build:/usr/share/nginx/html
+      - ./deploy/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - frontend_build:/srv
+      - caddy_data:/data
+      - caddy_config:/config
     depends_on:
       - backend
     restart: always
@@ -68,6 +71,8 @@ services:
 volumes:
   postgres_data:
   frontend_build:
+  caddy_data:
+  caddy_config:
 
 networks:
   vietio-network:

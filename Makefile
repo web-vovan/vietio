@@ -39,4 +39,3 @@ back:
 	git pull
 	docker compose build backend
 	docker compose up --force-recreate -d backend
-	docker compose restart nginx
