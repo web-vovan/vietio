@@ -2,11 +2,12 @@
 -- +goose StatementBegin
 INSERT INTO categories ("name", "order")
 VALUES
-    ('Барахолка', 1),
+    ('Маркет', 1),
     ('Байки', 2),
     ('Жильё', 3),
     ('Услуги', 4),
-    ('Разное', 5)
+    ('Работа', 4),
+    ('Разное', 6)
 -- +goose StatementEnd
 
 -- +goose Down
