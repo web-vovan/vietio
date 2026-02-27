@@ -62,8 +62,9 @@ services:
       context: ../vietio-ui
       dockerfile: ./Dockerfile
     volumes:
-      - frontend_build:/app/build
-    command: npm run build
+      - frontend_build:/deploy
+    command: >
+      sh -c "npm run build && rm -rf /deploy/* && cp -r build/* /deploy/"
     restart: "no"
     networks:
       - vietio-network
