@@ -15,6 +15,7 @@ import (
 	"vietio/internal/file"
 	"vietio/internal/middleware"
 	"vietio/internal/storage"
+	"vietio/internal/telegram"
 	"vietio/internal/user"
 	"vietio/migrations"
 )
@@ -114,6 +115,9 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	authService := auth.NewService(config, authValidator, userRepository)
 	authHandler := auth.NewHandler(authService)
 
+	tgClient := telegram.NewClient(config.BotToken)
+	telegramHandler := telegram.NewHandler(logger, tgClient)
+
 	// middleware
 	authMiddleware := middleware.AuthJWT(authService)
 
@@ -122,6 +126,7 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	// публичные роуты
 	router.HandleFunc("GET /api/ads", adsHandler.GetAds)
 	router.HandleFunc("POST /api/auth/login", authHandler.GetToken)
+	router.HandleFunc("POST /api/webhook", telegramHandler.Webhook)
 
 	// роуты с авторизацией
 	router.Handle(
