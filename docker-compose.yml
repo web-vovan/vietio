@@ -64,7 +64,7 @@ services:
     volumes:
       - frontend_build:/deploy
     command: >
-      sh -c "npm run build && rm -rf /deploy/* && cp -r build/* /deploy/"
+      sh -c "rm -rf /deploy/* && cp -r /app/build/* /deploy/"
     restart: "no"
     networks:
       - vietio-network
