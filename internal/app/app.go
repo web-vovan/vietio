@@ -53,7 +53,7 @@ func RunSeed(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 
 	logger.Info("успешная миграция БД")
 
-	if err := seed.Run(dbConn, fileStorage); err != nil {
+	if err := seed.Run(dbConn, fileStorage, logger); err != nil {
 		logger.Error("seed failed", "err", err)
 		os.Exit(1)
 	}
