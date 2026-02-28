@@ -9,6 +9,7 @@ import (
 
 	"github.com/adrium/goheif"
 	"github.com/disintegration/imaging"
+	"github.com/rwcarlsen/goexif/exif"
 	"golang.org/x/image/webp"
 )
 
@@ -45,19 +46,80 @@ func decodeImage(file multipart.File) (image.Image, error) {
 		return img, nil
 
 	default:
-		// Go стандартно определяет HEIC как "application/octet-stream",
-		// поэтому проверяем сигнатуру "ftyp" вручную.
-		// HEIF/HEIC файлы обычно содержат 'ftyp' на позициях 4-8.
+		// Проверяем сигнатуру HEIC (ftyp)
 		if len(buff) > 12 && string(buff[4:8]) == "ftyp" {
-			// Пробуем декодировать как HEIC
+			// --- ОБРАБОТКА HEIC С УЧЕТОМ EXIF ---
+
+			// 1. Сначала пытаемся достать EXIF (данные о повороте)
+			// goheif.ExtractExif читает файл, поэтому курсор сдвинется
+			exifData, err := goheif.ExtractExif(file)
+			
+			// Если ошибка при извлечении EXIF, мы её игнорируем, 
+			// так как нам все равно нужно декодировать саму картинку.
+			// Но сбрасываем курсор обратно в начало файла для декодера.
+			if _, err := file.Seek(0, 0); err != nil {
+				return nil, fmt.Errorf("failed to seek to start after exif extract: %w", err)
+			}
+
+			// 2. Декодируем само изображение
 			img, err := goheif.Decode(file)
 			if err != nil {
 				return nil, fmt.Errorf("failed to decode heic: %w", err)
 			}
+
+			// 3. Если EXIF был найден, применяем поворот
+			if exifData != nil {
+				img = applyOrientation(img, exifData)
+			}
+
 			return img, nil
 		}
 
 		return nil, fmt.Errorf("unsupported content type: %s", contentType)
+	}
+}
+
+// Вспомогательная функция для применения поворота на основе EXIF данных
+func applyOrientation(img image.Image, exifData []byte) image.Image {
+	r := bytes.NewReader(exifData)
+	x, err := exif.Decode(r)
+	if err != nil {
+		return img // Если не удалось распарсить EXIF, возвращаем как есть
+	}
+
+	tag, err := x.Get(exif.Orientation)
+	if err != nil {
+		return img
+	}
+
+	orient, err := tag.Int(0)
+	if err != nil {
+		return img
+	}
+
+	// Значения ориентации EXIF и необходимые действия:
+	// 1: Top-Left (Нормально)
+	// 3: Bottom-Right (Перевернуто на 180)
+	// 6: Right-Top (Повернуто 90 CW -> нужно повернуть 270 CCW или 90 CW)
+	// 8: Left-Bottom (Повернуто 270 CW -> нужно повернуть 90 CCW)
+	
+	switch orient {
+	case 2:
+		return imaging.FlipH(img)
+	case 3:
+		return imaging.Rotate180(img)
+	case 4:
+		return imaging.FlipV(img)
+	case 5:
+		return imaging.Rotate270(imaging.FlipH(img))
+	case 6:
+		return imaging.Rotate270(img)
+	case 7:
+		return imaging.Rotate90(imaging.FlipH(img))
+	case 8:
+		return imaging.Rotate90(img)
+	default:
+		return img
 	}
 }
 

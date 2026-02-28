@@ -61,8 +61,8 @@ func (s *S3Storage) Save(
 
 	// изображение
 	fullImg := img
-	if img.Bounds().Dx() > 1200 {
-		fullImg = imaging.Resize(img, 1200, 0, imaging.Lanczos)
+	if img.Bounds().Dx() > 1000 {
+		fullImg = imaging.Resize(img, 1000, 0, imaging.Lanczos)
 	}
 	fullImgData, err := encodeToJPG(fullImg, 85)
 	if err != nil {
