@@ -7,6 +7,7 @@ import (
 
 	appErrors "vietio/internal/errors"
 	"vietio/internal/response"
+	"vietio/internal/wishlist"
 	"vietio/pkg/utils"
 
 	"github.com/google/uuid"
@@ -242,4 +243,50 @@ func (h *Handler) MarkingSoldAd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.Json(w, DeleteAdResponse{true}, http.StatusOK)
+}
+
+func (h *Handler) AddFavorite(w http.ResponseWriter, r *http.Request) {
+	uuid, err := uuid.Parse(r.PathValue("uuid"))
+	if err != nil {
+		h.logger.Error(appErrors.ErrNotValidUuid.Error(), "err", err, "uuid", uuid)
+		http.Error(w, appErrors.ErrNotValidUuid.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = h.service.AddFavorite(r.Context(), uuid)
+
+	if err != nil {
+        h.logger.Warn(appErrors.ErrAddWithList.Error(), "err", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+        return
+    }
+
+	result := wishlist.AddWishlistResponse{
+		Result: true,
+	}
+
+    response.Json(w, result, http.StatusOK)
+}
+
+func (h *Handler) DeleteFavorite(w http.ResponseWriter, r *http.Request) {
+	uuid, err := uuid.Parse(r.PathValue("uuid"))
+	if err != nil {
+		h.logger.Error(appErrors.ErrNotValidUuid.Error(), "err", err, "uuid", uuid)
+		http.Error(w, appErrors.ErrNotValidUuid.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = h.service.DeleteFavorite(r.Context(), uuid)
+
+	if err != nil {
+        h.logger.Warn(appErrors.ErrDeleteWithList.Error(), "err", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+        return
+    }
+
+	result := wishlist.DeleteWishlistResponse{
+		Result: true,
+	}
+
+    response.Json(w, result, http.StatusOK)
 }

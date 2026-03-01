@@ -11,9 +11,9 @@ import (
 	"strings"
 
 	"vietio/internal/authctx"
+	appErrors "vietio/internal/errors"
 	fileApp "vietio/internal/file"
 	"vietio/internal/user"
-	appErrors "vietio/internal/errors"
 
 	"github.com/google/uuid"
 )
@@ -24,11 +24,12 @@ var allowedSort = map[string]string{
 }
 
 type Service struct {
-	repo      *Repository
-	fileRepo  FileRepository
-	userRepo  UserRepository
-	storage   FileStorage
-	validator *Validator
+	repo         *Repository
+	fileRepo     FileRepository
+	userRepo     UserRepository
+	wishlistRepo WishlistRepository
+	storage      FileStorage
+	validator    *Validator
 }
 
 type FileRepository interface {
@@ -41,19 +42,26 @@ type UserRepository interface {
 	GetUserById(context.Context, int64) (user.UserModel, error)
 }
 
+type WishlistRepository interface {
+	AddWishlist(ctx context.Context, userId int64, adUuid uuid.UUID) error
+	DeleteWishlist(ctx context.Context, userId int64, adUuid uuid.UUID) error
+}
+
 func NewService(
 	repo *Repository,
 	fileRepository FileRepository,
 	userRepository UserRepository,
+	wishlistRepository WishlistRepository,
 	storage FileStorage,
 	validator *Validator,
 ) *Service {
 	return &Service{
-		repo:      repo,
-		fileRepo:  fileRepository,
-		userRepo:  userRepository,
-		storage:   storage,
-		validator: validator,
+		repo:         repo,
+		fileRepo:     fileRepository,
+		userRepo:     userRepository,
+		wishlistRepo: wishlistRepository,
+		storage:      storage,
+		validator:    validator,
 	}
 }
 
@@ -477,7 +485,7 @@ func (s *Service) ArchivingAds(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	
+
 	for _, uuidItem := range uuidList {
 		r, err := uuid.Parse(uuidItem)
 		if err != nil {
@@ -505,4 +513,32 @@ func (s *Service) MarkingSoldAd(ctx context.Context, uuid uuid.UUID) error {
 	}
 
 	return s.processDeleteAd(ctx, ad, STATUS_SOLD)
+}
+
+func (s *Service) AddFavorite(ctx context.Context, uuid uuid.UUID) error {
+	contextUserId, err := authctx.GeUserIdFromContext(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = s.wishlistRepo.AddWishlist(ctx, contextUserId, uuid)
+    if err != nil {
+        return err
+    }
+    
+    return nil
+}
+
+func (s *Service) DeleteFavorite(ctx context.Context, uuid uuid.UUID) error {
+	contextUserId, err := authctx.GeUserIdFromContext(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = s.wishlistRepo.DeleteWishlist(ctx, contextUserId, uuid)
+    if err != nil {
+        return err
+    }
+    
+    return nil
 }

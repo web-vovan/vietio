@@ -17,6 +17,8 @@ var ErrForbidden = errors.New("forbidden")
 var ErrNotValidUuid = errors.New("not valid uuid")
 var ErrMyAdsList = errors.New("me ads list error")
 var ErrMySoldAdsList = errors.New("me sold ads list error")
+var ErrAddWithList = errors.New("add wishlist error")
+var ErrDeleteWithList = errors.New("delete wishlist error")
 
 var ErrAdNotFound = errors.New("ad not found")
 var ErrAdNotActive = errors.New("ad not active")

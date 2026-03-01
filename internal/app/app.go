@@ -17,6 +17,7 @@ import (
 	"vietio/internal/storage"
 	"vietio/internal/telegram"
 	"vietio/internal/user"
+	"vietio/internal/wishlist"
 	"vietio/migrations"
 )
 
@@ -66,6 +67,7 @@ func RunArchive(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	categoryRepository := categories.NewRepository(dbConn)
 	fileRepository := file.NewFileRepository(dbConn)
 	userRepository := user.NewRepository(dbConn)
+	wishlistRepository := wishlist.NewRepository(dbConn)
 	adValidator := ads.NewValidator(categoryRepository, adsRepository)
 
 	fileStorage, err := getFileStorage(config, logger)
@@ -77,6 +79,7 @@ func RunArchive(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 		adsRepository,
 		fileRepository,
 		userRepository,
+		wishlistRepository,
 		fileStorage,
 		adValidator,
 	)
@@ -95,6 +98,7 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	categoryRepository := categories.NewRepository(dbConn)
 	fileRepository := file.NewFileRepository(dbConn)
 	userRepository := user.NewRepository(dbConn)
+	wishlistRepository := wishlist.NewRepository(dbConn)
 	adValidator := ads.NewValidator(categoryRepository, adsRepository)
 
 	fileStorage, err := getFileStorage(config, logger)
@@ -106,6 +110,7 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 		adsRepository,
 		fileRepository,
 		userRepository,
+		wishlistRepository,
 		fileStorage,
 		adValidator,
 	)
@@ -160,10 +165,20 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 		authMiddleware(http.HandlerFunc(adsHandler.GetMySoldAds)),
 	)
 
+	router.Handle(
+		"POST /api/ads/{uuid}/favorite",
+		authMiddleware(http.HandlerFunc(adsHandler.AddFavorite)),
+	)
+
+	router.Handle(
+		"DELETE /api/ads/{uuid}/favorite",
+		authMiddleware(http.HandlerFunc(adsHandler.DeleteFavorite)),
+	)
+
 	// @todo убрать
-	// if config.Env == "dev" {
+	if config.Env == "dev" {
 		router.HandleFunc("/api/test-init-data/{username}", authHandler.GetTestInitData)
-	// }
+	}
 
 	// отдаем статику для локального хранилища
 	if config.StorageType == "local" {
