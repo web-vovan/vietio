@@ -34,6 +34,7 @@ func main() {
 
 	seedFlag := flag.Bool("seed", false, "наполнение БД тестовыми данными")
 	archiveFlag := flag.Bool("archive", false, "архивирование старых объявлений")
+	downFlag := flag.Bool("down", false, "rollback миграции")
 	flag.Parse()
 
 	if *seedFlag {
@@ -46,7 +47,12 @@ func main() {
 		return
 	}
 
-	app.RunMigrations(dbConn, logger)
+	if *downFlag {		
+		app.RunDownMigrations(dbConn, logger)
+		return
+	}
+
+	app.RunUpMigrations(dbConn, logger)
 
 	app.RunHttpServer(dbConn, config, logger)
 }

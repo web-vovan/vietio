@@ -25,6 +25,20 @@ func Up(db *sql.DB) error {
     return nil
 }
 
+func Down(db *sql.DB) error {
+    if err := goose.SetDialect("postgres"); err != nil {
+        return fmt.Errorf("set goose dialect: %w", err)
+    }
+
+    goose.SetBaseFS(migrationsFS)
+
+    if err := goose.Down(db, "."); err != nil {
+        return fmt.Errorf("down migrations: %w", err)
+    }
+
+    return nil
+}
+
 func Reset(db *sql.DB) error {
     if err := goose.SetDialect("postgres"); err != nil {
         return fmt.Errorf("set goose dialect: %w", err)

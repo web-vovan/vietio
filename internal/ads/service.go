@@ -45,6 +45,7 @@ type UserRepository interface {
 type WishlistRepository interface {
 	AddWishlist(ctx context.Context, userId int64, adUuid uuid.UUID) error
 	DeleteWishlist(ctx context.Context, userId int64, adUuid uuid.UUID) error
+	HasUserWishlistByAdUuid(ctx context.Context, userId int64, adUuid uuid.UUID) (bool, error)
 }
 
 func NewService(
@@ -112,6 +113,7 @@ func (s *Service) GetAds(ctx context.Context, params AdsListQueryParams) (AdsLis
 			CategoryId: adItem.CategoryId,
 			Price:      adItem.Price,
 			City:       "Нячанг",
+			Status:     getTextStatus(adItem.Status),
 			Image:      s.storage.GetPublicPath(adItem.Image),
 			CreatedAt:  adItem.CreatedAt,
 		})
@@ -139,7 +141,10 @@ func (s *Service) GetMyAds(ctx context.Context) (MyAdsListResponse, error) {
 		Order:  "desc",
 		Limit:  1000,
 	}
-	adsListRepository, _ := s.repo.FindAds(ctx, filterParams)
+	adsListRepository, err := s.repo.FindAds(ctx, filterParams)
+	if err != nil {
+		return result, err
+	}
 
 	items := make([]AdsListItemResponse, 0, len(adsListRepository.Items))
 
@@ -150,6 +155,7 @@ func (s *Service) GetMyAds(ctx context.Context) (MyAdsListResponse, error) {
 			CategoryId: adItem.CategoryId,
 			Price:      adItem.Price,
 			City:       "Нячанг",
+			Status:     getTextStatus(adItem.Status),
 			Image:      s.storage.GetPublicPath(adItem.Image),
 			CreatedAt:  adItem.CreatedAt,
 		})
@@ -177,7 +183,10 @@ func (s *Service) GetMySoldAds(ctx context.Context) (MySoldAdsListResponse, erro
 		Order:  "desc",
 		Limit:  1000,
 	}
-	adsListRepository, _ := s.repo.FindAds(ctx, filterParams)
+	adsListRepository, err := s.repo.FindAds(ctx, filterParams)
+	if err != nil {
+		return result, err
+	}
 
 	items := make([]AdsListItemResponse, 0, len(adsListRepository.Items))
 
@@ -188,6 +197,47 @@ func (s *Service) GetMySoldAds(ctx context.Context) (MySoldAdsListResponse, erro
 			CategoryId: adItem.CategoryId,
 			Price:      adItem.Price,
 			City:       "Нячанг",
+			Status:     getTextStatus(adItem.Status),
+			CreatedAt:  adItem.CreatedAt,
+		})
+	}
+
+	result.Items = items
+	result.Total = len(items)
+
+	return result, nil
+}
+
+func (s *Service) GetMyFavoritesAds(ctx context.Context) (MyFavoritesAdsListResponse, error) {
+	var result MyFavoritesAdsListResponse
+	userId, err := authctx.GeUserIdFromContext(ctx)
+	if err != nil {
+		return result, err
+	}
+
+	adsListRepository, err := s.repo.FindFavoritesAdsByUserId(ctx, userId)
+	if err != nil {
+		return result, err
+	}
+
+	items := make([]AdsListItemResponse, 0, len(adsListRepository.Items))
+
+	for _, adItem := range adsListRepository.Items {
+		status := getTextStatus(adItem.Status)
+		var image string
+
+		if status == "active" {
+			image = s.storage.GetPublicPath(adItem.Image)
+		}
+
+		items = append(items, AdsListItemResponse{
+			Uuid:       adItem.Uuid,
+			Title:      adItem.Title,
+			CategoryId: adItem.CategoryId,
+			Price:      adItem.Price,
+			City:       "Нячанг",
+			Status:     status,
+			Image:      image,
 			CreatedAt:  adItem.CreatedAt,
 		})
 	}
@@ -264,6 +314,11 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 		return result, err
 	}
 
+	isFavorite, err := s.wishlistRepo.HasUserWishlistByAdUuid(ctx, ctxUserId, uuid)
+	if err != nil {
+		return result, appErrors.ErrAdFavorite
+	}
+
 	var images = make([]string, 0, len(adFiles))
 	for _, file := range adFiles {
 		publicPath := s.storage.GetPublicPath(file.Path)
@@ -279,6 +334,7 @@ func (s *Service) GetAd(ctx context.Context, uuid uuid.UUID) (AdResponse, error)
 		City:          "Нячанг",
 		CreatedAt:     adModel.CreatedAt,
 		IsOwner:       adModel.UserId == ctxUserId,
+		IsFavorite:    isFavorite,
 		OwnerUsername: adOwner.Username,
 		Images:        images,
 	}, nil
@@ -434,7 +490,6 @@ func (s *Service) processDeleteAd(ctx context.Context, ad AdModel, finalStatus i
 	if err != nil {
 		return err
 	}
-	
 	if err := tx.Commit(); err != nil {
 		return nil
 	}
@@ -522,11 +577,11 @@ func (s *Service) AddFavorite(ctx context.Context, uuid uuid.UUID) error {
 	}
 
 	err = s.wishlistRepo.AddWishlist(ctx, contextUserId, uuid)
-    if err != nil {
-        return err
-    }
-    
-    return nil
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *Service) DeleteFavorite(ctx context.Context, uuid uuid.UUID) error {
@@ -536,9 +591,9 @@ func (s *Service) DeleteFavorite(ctx context.Context, uuid uuid.UUID) error {
 	}
 
 	err = s.wishlistRepo.DeleteWishlist(ctx, contextUserId, uuid)
-    if err != nil {
-        return err
-    }
-    
-    return nil
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

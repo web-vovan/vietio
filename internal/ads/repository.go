@@ -63,6 +63,7 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 			title,
             category_id,
             price,
+			status,
             created_at,
 			COALESCE(f.preview_path, '') as image,
             count(*) over() as total
@@ -98,6 +99,7 @@ func (repo *Repository) FindAds(ctx context.Context, params AdsListFilterParams)
 			&ad.Title,
 			&ad.CategoryId,
 			&ad.Price,
+			&ad.Status,
 			&ad.CreatedAt,
 			&ad.Image,
 			&total,
@@ -301,6 +303,67 @@ func (repo *Repository) FindExpiredUuidList(ctx context.Context) ([]string, erro
 		}
 		result = append(result, uuid)
 	}
+
+	return result, nil
+}
+
+func (repo *Repository) FindFavoritesAdsByUserId(ctx context.Context, userId int64) (AdsListRepository, error) {
+	var result AdsListRepository
+
+	var ads []AdsListItemRepository
+	var total int
+	
+	query := `
+		SELECT
+			t2.uuid,
+			t2.title,
+			t2.category_id,
+			t2.price,
+			t2.status,
+			t2.created_at,
+			COALESCE(t3.preview_path, '') as image,
+			count(*) over() as total
+		FROM wishlist AS t1
+		LEFT JOIN ads as t2 on t2.uuid = t1.ad_uuid
+		LEFT JOIN LATERAL (
+			SELECT preview_path
+			FROM files
+			WHERE files.ad_uuid = t2.uuid
+			ORDER BY created_at ASC
+			LIMIT 1
+		) t3 ON true
+		WHERE 
+			t2.status IN (1, 4)
+			AND t1.user_id=$1
+		ORDER BY
+			t2.status ASC, t1.created_at DESC
+    `
+
+	rows, err := repo.db.QueryContext(ctx, query, userId)
+	if err != nil {
+		return result, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var ad AdsListItemRepository
+		if err := rows.Scan(
+			&ad.Uuid,
+			&ad.Title,
+			&ad.CategoryId,
+			&ad.Price,
+			&ad.Status,
+			&ad.CreatedAt,
+			&ad.Image,
+			&total,
+		); err != nil {
+			return result, err
+		}
+		ads = append(ads, ad)
+	}
+
+	result.Items = ads
+	result.Total = total
 
 	return result, nil
 }

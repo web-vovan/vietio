@@ -16,13 +16,15 @@ var ErrUpdateAdValidation = errors.New("ad update error validation")
 var ErrForbidden = errors.New("forbidden")
 var ErrNotValidUuid = errors.New("not valid uuid")
 var ErrMyAdsList = errors.New("me ads list error")
-var ErrMySoldAdsList = errors.New("me sold ads list error")
+var ErrMySoldAdsList = errors.New("my sold ads list error")
+var ErrMyFavoritesAdsList = errors.New("my favorites ads list error")
 var ErrAddWithList = errors.New("add wishlist error")
 var ErrDeleteWithList = errors.New("delete wishlist error")
 
 var ErrAdNotFound = errors.New("ad not found")
 var ErrAdNotActive = errors.New("ad not active")
 var ErrAdUserNotFound = errors.New("ad user not found")
+var ErrAdFavorite = errors.New("ad error found")
 
 type ValidationError struct {
 	Errors []ValidationErrorItem `json:"errors"`

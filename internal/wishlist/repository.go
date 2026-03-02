@@ -44,3 +44,22 @@ func (r *Repository) DeleteWishlist(ctx context.Context, userId int64, adUuid uu
 
     return nil
 }
+
+func (r *Repository) HasUserWishlistByAdUuid(ctx context.Context, userId int64, adUuid uuid.UUID) (bool, error) {
+    var result bool
+
+    query := `
+        SELECT EXISTS (
+            SELECT *
+            FROM wishlist
+            WHERE user_id=$1 and ad_uuid=$2
+        )
+    `
+
+    err := r.db.QueryRowContext(ctx, query, userId, adUuid).Scan(&result)
+    if err != nil {
+        return false, err
+    }
+
+    return result, nil
+}

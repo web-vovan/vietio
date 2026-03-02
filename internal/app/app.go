@@ -21,12 +21,20 @@ import (
 	"vietio/migrations"
 )
 
-func RunMigrations(dbConn *sql.DB, logger *slog.Logger) {
+func RunUpMigrations(dbConn *sql.DB, logger *slog.Logger) {
 	if err := migrations.Up(dbConn); err != nil {
 		logger.Error("migration failed", "err", err)
 	}
 
 	logger.Info("успешная миграция БД")
+}
+
+func RunDownMigrations(dbConn *sql.DB, logger *slog.Logger) {
+	if err := migrations.Down(dbConn); err != nil {
+		logger.Error("migration failed", "err", err)
+	}
+
+	logger.Info("успешный rollback миграции БД")
 }
 
 func RunSeed(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
@@ -173,6 +181,11 @@ func RunHttpServer(dbConn *sql.DB, config *config.Config, logger *slog.Logger) {
 	router.Handle(
 		"DELETE /api/ads/{uuid}/favorite",
 		authMiddleware(http.HandlerFunc(adsHandler.DeleteFavorite)),
+	)
+
+	router.Handle(
+		"GET /api/my/favorites",
+		authMiddleware(http.HandlerFunc(adsHandler.GetMyFavoritesAds)),
 	)
 
 	// @todo убрать

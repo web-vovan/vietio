@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS wishlist (
   id bigserial NOT NULL,
   ad_uuid UUID NULL,
   user_id int8 NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
   
   CONSTRAINT wishlist_pkey PRIMARY KEY (id),
   CONSTRAINT wishlist_user_ad_unique UNIQUE (user_id, ad_uuid)

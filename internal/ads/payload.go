@@ -59,6 +59,7 @@ type AdsListItemRepository struct {
 	Title      string
 	CategoryId int
 	Price      int
+	Status     int
 	CreatedAt  time.Time
 	Image      string
 }
@@ -69,6 +70,7 @@ type AdsListItemResponse struct {
 	CategoryId int       `json:"category_id"`
 	Price      int       `json:"price"`
 	City       string    `json:"city"`
+	Status     string    `json:"status"`
 	Image      string    `json:"image"`
 	CreatedAt  time.Time `json:"created_at"`
 }
@@ -86,6 +88,11 @@ type MyAdsListResponse struct {
 }
 
 type MySoldAdsListResponse struct {
+	Items []AdsListItemResponse `json:"items"`
+	Total int                   `json:"total"`
+}
+
+type MyFavoritesAdsListResponse struct {
 	Items []AdsListItemResponse `json:"items"`
 	Total int                   `json:"total"`
 }
@@ -111,6 +118,7 @@ type AdResponse struct {
 	City          string    `json:"city"`
 	CreatedAt     time.Time `json:"created_at"`
 	IsOwner       bool      `json:"is_owner"`
+	IsFavorite    bool      `json:"is_favorite"`
 	OwnerUsername string    `json:"owner_username"`
 	Images        []string  `json:"images"`
 }
